@@ -1,0 +1,91 @@
+/* DEBUG:: */
+
+/* body {
+  border: 2px solid magenta;
+} */
+
+/* ::DEBUG */
+
+
+
+/* SECTION: Global defaults */
+
+:root {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #fefefe;
+}
+
+
+
+/* SECTION: Navigation bar */
+
+nav {
+  /* Colouring */
+  background-color: #faf8f8;
+  /* Sizing */
+  width: 100%;
+  max-height: 40px;
+  padding-bottom: 6px;
+  padding-top: 6px;
+  border-bottom: 2px solid #000000;
+  /* Alignment of internal items */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+
+.logo-container {
+  height: 44px;
+  margin-left: 20px;
+  transition: 0.25s;
+  display: flex;
+  align-items: center;
+  align-content: center;
+}
+
+.logo {
+  width: 90%;
+  height: 90%;
+  max-height: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  transition: 0.25s;
+  border: 2px solid #000000;
+}
+
+/* KILLME: This `:hover` is excessive and distracting imo */
+.logo:hover {
+  outline: 2px solid black;
+  outline-offset: 4px;
+  transition: 0.25s;
+}
+
+
+.link-container {
+  display: flex;
+  justify-content: space-between;
+  margin-right: 20px;
+}
+
+.nav-link {
+  margin-left: 5px;
+  margin-right: 5px;
+  padding: 6px;
+  border: 2px solid #000000;
+  border-radius: 6px;
+  background-color: #a6c3ff;
+  color: #000000;
+  font-size: medium;
+  text-decoration: none;
+  transition: 0.25s; /* Transitions on `:hover` */
+}
+
+.nav-link:hover {
+  background-color: #3366cc;
+  color: #fefefe;
+}
+
+
+
+/* SECTION: */

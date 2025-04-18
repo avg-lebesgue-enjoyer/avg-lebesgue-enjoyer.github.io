@@ -29,10 +29,17 @@
     </nav>
     <main class="index-page-main">
       <div class="hero-image">
-        <!-- FIXME: This needs to have multiple responsive options! See `about.html` for a list of good sizes. -->
         <img
-          srcset="asset/hero-art/hero-art-cropped.png"
-          sizes="3480px"
+          srcset="asset/hero-art/hero-art-cropped-435.png 435w,
+                  asset/hero-art/hero-art-cropped-870.png 870w,
+                  asset/hero-art/hero-art-cropped-1740.png 1740w,
+                  asset/hero-art/hero-art-cropped-2160.png 2160w,
+                  asset/hero-art/hero-art-cropped-3480.png"
+          sizes=" (max-width: 435px) 435px,
+                  (max-width: 870px) 870px,
+                  (max-width: 1740px) 1740px,
+                  (max-width: 2610px) 2610px,
+                  3480px"
           src="asset/hero-art/hero-art-cropped.png"
           alt="An infinite whiteboard boasting the Empty Limit name on which various diagrams are drawn"
         >
@@ -47,7 +54,7 @@
         <p>
           Unsure where in the Glossary to start? Try this suggested reading order!
         </p>
-        <svg class="reading-order" viewBox="0 0 1000 300"> <!-- FIXME: `width` and `height` are probbos bad -->
+        <svg class="reading-order" viewBox="0 0 1000 300">
           <!-- I learned the minimal SVG I needed to know for this graphic from these sources:
             SOURCE: https://stackoverflow.com/a/60714330 (The code to generate arrowheads is adapted from here)
             SOURCE: https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorials/SVG_from_scratch/Paths

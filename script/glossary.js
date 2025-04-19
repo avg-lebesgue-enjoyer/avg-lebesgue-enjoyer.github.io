@@ -526,7 +526,5 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById("loading-spinner").classList.add("hidden");
   document.getElementById("sort-by-container").classList.remove("hidden");
   document.getElementById("page-list").classList.remove("hidden");
-  // TESTING::
   document.getElementById("search-container").classList.remove("hidden");
-  // ::TESTING
 });

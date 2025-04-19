@@ -349,7 +349,8 @@ main form > input.submit {
 
 /* SECTION: Glossary */
 
-main #sort-by-container {
+main #sort-by-container,
+main #search-container {
   /* Size bounding box */
   max-width: 60em;
   width: 30em;
@@ -363,17 +364,40 @@ main #sort-by-container {
   display: flex;
   align-items: center;
   justify-content: space-evenly;
-  /* Border */
-  background-color: var(--secondary-background-colour);
-  border: calc(var(--border-thickness) / 2) solid var(--border-colour);
-  border-radius: var(--border-radius);  
 }
 @media (width <= 700px) {
-  main #sort-by-container {
+  main #sort-by-container,
+  main #search-container {
     flex-direction: column;
     min-width: 0;
     width: 80%;
   }
+}
+
+main #sort-by-container {
+  /* Background and border */
+  background-color: var(--secondary-background-colour);
+  border: calc(var(--border-thickness) / 2) solid var(--border-colour);
+  border-radius: var(--border-radius);  
+}
+
+main #search-container input {
+  /* Text */
+  font-family: var(--font-family);
+  text-align: center;
+  /* Size */
+  width: 90%;
+  padding: 0.25em;
+  margin-left: auto;
+  margin-right: auto;
+  /* Border */
+  background-color: var(--secondary-background-colour);
+  border: calc(var(--border-thickness) / 2) solid var(--border-colour);
+  border-radius: var(--border-radius);
+}
+main #search-container > input::placeholder {
+  font-size: small;
+  font-style: italic;
 }
 
 

@@ -41,28 +41,28 @@ document.addEventListener('DOMContentLoaded', () => {
         topic:  topicCategoriesFunctorsNaturalTransformations,
         href:   "discussion/categories.html",
         tags:   [ "category",
-                  "categories" ],
+                  "categories", ],
       },
       { title:  "Functors",
         topic:  topicCategoriesFunctorsNaturalTransformations,
         href:   "discussion/functors.html",
-        tags:   [ "functors" ],
+        tags:   [ "functors", ],
       },
       { title:  "Natural Transformations",
         topic:  topicCategoriesFunctorsNaturalTransformations,
         href:   "discussion/natural-transformations.html",
-        tags:   [ "natural transformation" ],
+        tags:   [ "natural transformation", ], // also matches "natural"
       },
       { title:  "Duality",
         topic:  topicCategoriesFunctorsNaturalTransformations,
         href:   "discussion/duality.html",
-        tags:   [ "duality" ],
+        tags:   [ "duality", ],
       },
       { title:  "Initial and Terminal Objects",
         topic:  topicUniversalConstructions,
         href:   "discussion/initial-terminal-objects.html",
-        tags:   [ "initial objects",    // also matches "initial" and "initial object"
-                  "terminal objects" ], // also matches "terminal"
+        tags:   [ "initial objects",      // also matches "initial" and "objects"
+                  "terminal objects", ],  // also matches "terminal"
       },
       { title:  "Limits",
         topic:  topicUniversalConstructions,
@@ -73,19 +73,18 @@ document.addEventListener('DOMContentLoaded', () => {
         topic:  topicUniversalConstructions,
         href:   "discussion/adjunctions.html",
         tags:   [ "adjunctions",
-                  "adjoints" ],
+                  "adjoints", ],
       },
       { title:  "Absolute Limits",
         topic:  topicUniversalConstructions,
         href:   "discussion/absolute-limits.html",
-        tags:   [ "absolute limits" ], // Also matches "absolute" and "limit"
+        tags:   [ "absolute limits", ], // Also matches "absolute" and "limit"
       },
       { title:  "Right Adjoints Preserve Limits",
         topic:  topicUniversalConstructions,
         href:   "proof/right-adjoints-preserve-limits.html",
         tags:   [ "adjunctions",
-                  "right adjoints", // Also matches "adjoints"
-                  "limits" ]
+                  "right adjoints preserve limits", ], // Also matches "adjoints" and "limits"
       },
     ]
   };
@@ -397,7 +396,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-  /* SECTION: Change sorting on change of "Sort by:" field */
+  /* SECTION: Event handlers */
 
   /** String designating alphabetical sorting of the glossary. */
   const sortAlphabetical = "sort-alphabetical";
@@ -417,21 +416,32 @@ document.addEventListener('DOMContentLoaded', () => {
     .flatMap((element) => (Array.from(element.children)))
     .filter((element) => (element.tagName === "INPUT" && element.type === "radio"))
   );
-  
 
   /**
-   * Handle change on "Sort by:" field, producing a list of pages for the user.
-   * @param {string} sortMethod
-   *  Method to switch to sorting to
-   * @param {PointerEvent} e
-   *  The event triggering this callback
+   * MUTABLE STATE capturing the state of the items shown on the glossary, shared amongst `updateGlossary`,
+   * `handleSortBy` and `handleSearchBar`.
+   * Type: `{ sortBy: string,
+   *          filteredPages: { title: string,   // Page title
+   *                           topic: string,   // Page topic
+   *                           href:  string,   // Page URL
+   *                           tags:  string[]  // Array of tags for the page (used by `handleSearchBar`)
+   *                         }[]
+   *        }`
    */
-  const handleSortBy = (sortMethod, e) => {
+  let glossaryState = {
+    sortBy: sortAlphabetical,
+    filteredPages: pages.pages
+  };
+
+  /**
+   * Update the glossary page to match the current `glossaryState`.
+   */
+  const updateGlossary = () => {
     try {
       const groups =
-        sortMethod === sortAlphabetical
-        ? groupAlphabetically(pages.pages)
-        : groupByTopic(pages.pages)
+        glossaryState.sortBy === sortAlphabetical
+        ? groupAlphabetically(glossaryState.filteredPages)
+        : groupByTopic(glossaryState.filteredPages)
       ;
       if (groups === null) {
         throw new Error("Groups were unable to be formed!");
@@ -445,6 +455,30 @@ document.addEventListener('DOMContentLoaded', () => {
       showErrorMessage();
     }
   };
+
+  /**
+   * Handle change on "Sort by:" field, producing a list of pages for the user.
+   * @param {string} sortMethod
+   *  Method to switch to sorting to
+   * @param {PointerEvent} e
+   *  The event triggering this callback
+   */
+  const handleSortBy = (sortMethod, e) => {
+    glossaryState.sortBy = sortMethod;
+    updateGlossary();
+  };
+
+  /**
+   * Handle change in the search bar, producing a list of pages for the user.
+   * @param {InputEvent} e
+   *  The event triggering this callback
+   */
+  const handleSearchBar = (e) => {
+    const searchValue = document.getElementById("search-bar").value;
+    glossaryState.filteredPages = fuzzilySearchForPage(searchValue); // NOTE: This isn't dangerous ONLY BECAUSE we're not passing this to an external API. If that chagnes in the future, THIS MUST BE REVIEWED TOO.
+    updateGlossary();
+  }
+
 
 
 
@@ -468,6 +502,8 @@ document.addEventListener('DOMContentLoaded', () => {
       radio.addEventListener("click", (e) => handleSortBy(radio.value, e));
     })
   ;
+  // Add event listener for changes to the search bar
+  document.getElementById("search-bar").addEventListener("input", handleSearchBar);
 
   // Produce default list of pages
   handleSortBy(sortAlphabetical, new Event(""));
@@ -475,4 +511,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById("loading-spinner").classList.add("hidden");
   document.getElementById("sort-by-container").classList.remove("hidden");
   document.getElementById("page-list").classList.remove("hidden");
+  // TESTING::
+  document.getElementById("search-container").classList.remove("hidden");
+  // ::TESTING
 });

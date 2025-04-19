@@ -505,6 +505,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Add event listener for changes to the search bar
   document.getElementById("search-bar").addEventListener("input", handleSearchBar);
 
+  // Clear out search bar
+  document.getElementById("search-bar").value = "";
   // Produce default list of pages
   handleSortBy(sortAlphabetical, new Event(""));
   // Show results to the user

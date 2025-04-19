@@ -479,6 +479,17 @@ document.addEventListener('DOMContentLoaded', () => {
     updateGlossary();
   }
 
+  /**
+   * Handle keypresses by the user, by jumping to the search bar if an alphanumeric key is pressed.
+   * @param {KeyboardEvent} e
+   *  The event triggering this callback 
+   */
+  const handleKeyDown = (e) => {
+    if (e.key.match(/^[0-9a-zA-Z]$/)) {
+      document.getElementById("search-bar").focus();
+    }
+  }
+
 
 
 
@@ -504,6 +515,8 @@ document.addEventListener('DOMContentLoaded', () => {
   ;
   // Add event listener for changes to the search bar
   document.getElementById("search-bar").addEventListener("input", handleSearchBar);
+  // Add event listener for key down to jump to search bar
+  document.addEventListener("keydown", handleKeyDown);
 
   // Clear out search bar
   document.getElementById("search-bar").value = "";

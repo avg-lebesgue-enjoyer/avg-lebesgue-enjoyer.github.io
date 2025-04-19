@@ -2,6 +2,11 @@ document.addEventListener('DOMContentLoaded', () => {
   /* SECTION: Page list */
   // TODO: Try and move this into an `import` statement. Firefox is blocking them on my machine.
 
+  /** This is a `const` to guarantee no typos in the definition of `pages`. */
+  const topicCategoriesFunctorsNaturalTransformations = "Categories, Functors and Natural Transformations";
+  /** This is a `const` to guarantee no typos in the definition of `pages`. */
+  const topicUniversalConstructions = "Universal Constructions";
+
   /**
    * An object capturing all pages on the website and their topics.
    * Type: `{ topics: string[],           // Array of topics that will get rendered on "Sort by: Topic"
@@ -28,51 +33,58 @@ document.addEventListener('DOMContentLoaded', () => {
    */
   const pages = {
     topics: [
-      "Categories, Functors and Natural Transformations",
-      "Universal Constructions",
+      topicCategoriesFunctorsNaturalTransformations,
+      topicUniversalConstructions,
     ],
     pages: [
-      // TESTING:: I put adjunctions at the top to ensure that sorting is being tested appropriately
-      // TODO: Move this back into a sensible spot
-      { title:  "Adjunctions",
-        topic:  "Universal Constructions",
-        href:   "discussion/adjunctions.html",
-        tags:   ["adjunctions",
-                  "adjoints" ],
-      },
-      // ::TESTING
       { title:  "Categories",
-        topic:  "Categories, Functors and Natural Transformations",
+        topic:  topicCategoriesFunctorsNaturalTransformations,
         href:   "discussion/categories.html",
         tags:   [ "category",
                   "categories" ],
       },
       { title:  "Functors",
-        topic:  "Categories, Functors and Natural Transformations",
+        topic:  topicCategoriesFunctorsNaturalTransformations,
         href:   "discussion/functors.html",
         tags:   [ "functors" ],
       },
       { title:  "Natural Transformations",
-        topic:  "Categories, Functors and Natural Transformations",
+        topic:  topicCategoriesFunctorsNaturalTransformations,
         href:   "discussion/natural-transformations.html",
         tags:   [ "natural transformation" ],
       },
       { title:  "Duality",
-        topic:  "Categories, Functors and Natural Transformations",
+        topic:  topicCategoriesFunctorsNaturalTransformations,
         href:   "discussion/duality.html",
         tags:   [ "duality" ],
       },
       { title:  "Initial and Terminal Objects",
-        topic:  "Universal Constructions",
+        topic:  topicUniversalConstructions,
         href:   "discussion/initial-terminal-objects.html",
         tags:   [ "initial objects",    // also matches "initial" and "initial object"
-                  "terminal objects" ]  // also matches "terminal"
+                  "terminal objects" ], // also matches "terminal"
+      },
+      { title:  "Limits",
+        topic:  topicUniversalConstructions,
+        href:   "discussion/limits.html",
+        tags:   [ "limits" ],
+      },
+      { title:  "Adjunctions",
+        topic:  topicUniversalConstructions,
+        href:   "discussion/adjunctions.html",
+        tags:   [ "adjunctions",
+                  "adjoints" ],
+      },
+      { title:  "Absolute Limits",
+        topic:  topicUniversalConstructions,
+        href:   "discussion/absolute-limits.html",
+        tags:   [ "absolute limits" ], // Also matches "absolute" and "limit"
       },
       { title:  "Right Adjoints Preserve Limits",
-        topic:  "Universal Constructions",
+        topic:  topicUniversalConstructions,
         href:   "proof/right-adjoints-preserve-limits.html",
         tags:   [ "adjunctions",
-                  "right adjoints", // Also matches "adjoint"
+                  "right adjoints", // Also matches "adjoints"
                   "limits" ]
       },
     ]
@@ -95,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
    *  Final transformed value
    */
   function doAll(transformations, initialValue) {
-    if (transformations.length == 0) {
+    if (transformations.length === 0) {
       return initialValue;
     } else {
       const [transformation, ...nextTransformations] = transformations;
@@ -116,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
    *  if the `value` does not occur in the `list`
    */
   function skipJustPast (value, list) {
-    if (list.length == 0) {
+    if (list.length === 0) {
       return null;
     } else {
       const [head, ...tail] = list;
@@ -256,16 +268,211 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-  // DEBUG::
-  console.debug(pages);
-  console.debug(
-    fuzzilySearch(
-      pages.pages.map((page) => (page.title)),
-      "adj"
-    )
+  /* SECTION: Split the `pages` into groups to be rendered */
+
+  /**
+   * Compare strings lexicographically. To be used with `Array.prototype.sort`.
+   * @param {string} a
+   *  First string to be compared
+   * @param {string} b 
+   *  Second string to be compared
+   * @returns {number}
+   *  A negative value if `a` is lexicographically before `b`; zero if `a === b`; a positive value otherwise
+   */
+  function compare(a, b) {
+    return (
+      a < b
+      ? -1
+      : a === b
+      ? 0 
+      : 1
+    );
+  }
+
+  /**
+   * Sort a given array of `pages` by their `title`s.
+   * Modifies `pages`.
+   * @param {{ title: string }[]} pages 
+   *  The pages to sort
+   * @returns {{ title: string }[]}
+   *  The pages, sorted alphabetically by `title`
+   */
+  function sortAlphabetically(pages) {
+    pages.sort((a, b) => (compare(a.title, b.title)));
+    return pages;
+  }
+
+  /**
+   * Given an array of `pages`, group them by the first letter of their `title`s.
+   * Fail if any page has an empty `title`.
+   * @param {{ title: string }[]} pages
+   *  Pages to group alphabetically
+   * @returns {{ groupName: string, pages: { title: string }[]}[] | null}
+   *  Array containing page groups
+   */
+  function groupAlphabetically(pages) {
+    return pages.reduce((groupsSoFar, page) => {
+      // Bail if something has gone wrong
+      if (groupsSoFar === null || !page.title || page.title.length === 0) {
+        return null;
+      }
+      // Find the group whose name is the first character of the `title` of the current `page`
+      const firstTitleCharacter = page.title.charAt(0);
+      const groupIndex = groupsSoFar.findIndex((group) => (group.groupName === firstTitleCharacter));
+      // Add the `page` to that group, creating a new group if necessary
+      if (groupIndex === -1) {
+        groupsSoFar.push({ groupName: firstTitleCharacter, pages: [page] });
+      } else {
+        groupsSoFar[groupIndex].pages.push(page);
+      }
+      return groupsSoFar;
+    }, []);
+  }
+
+  /**
+   * Given an array of `pages`, group them by their `topic`s.
+   * @param {{ topic: string }[]} pages
+   *  Pages to group alphabetically
+   * @returns {{ groupName: string, pages: { topic: string }[]}[] | null}
+   *  Array containing page groups
+   */
+  function groupByTopic(pages) {
+    return pages.reduce((groupsSoFar, page) => {
+      // Bail if something has gone wrong
+      if (groupsSoFar === null || !page.topic) {
+        return null;
+      }
+      // Find the group whose name is the `topic` of the current `page`
+      const groupIndex = groupsSoFar.findIndex((group) => (group.groupName === page.topic));
+      // Add the `page` to that group, creating a new group if necessary
+      if (groupIndex === -1) {
+        groupsSoFar.push({ groupName: page.topic, pages: [page] });
+      } else {
+        groupsSoFar[groupIndex].pages.push(page);
+      }
+      return groupsSoFar;
+    }, []);
+  }
+
+
+
+  /* SECTION: Produce page list */
+  // NOTE: Code for this kind of task is far more readable with a framework like React. Perhaps a direction for
+  //       future development, if this website actually gets used by someone other than me :)
+
+  /**
+   * Given a list of `pagesToRender`, render the pages.
+   * @param {{ groupName: string, pages: { title: string, href: string }[] }[]} pagesToRender
+   *  Array of groups of pages. Each group is specified by a `groupName`, which is used to render the title
+   *  appearing above the group. The `pages` within each group are specified by a `title` to be rendered and
+   *  a `href` to redirect to.
+   */
+  function overridePageList(pagesToRender) {
+    const pageList = document.getElementById("page-list");
+    pageList.textContent = ""; // Clear current page list; trick from SOURCE: https://stackoverflow.com/a/3955238
+    // Create HTML for each group of pages
+    pagesToRender.forEach((group) => {
+      // Create `<div>` holding the content
+      const div = document.createElement("DIV");
+      pageList.appendChild(div);
+      div.classList.add("glossary-group");
+      // Create `<h2>` holding the `groupName`
+      const h2 = document.createElement("H2");
+      div.appendChild(h2);
+      h2.appendChild(document.createTextNode(group.groupName));
+      // Create the `<ul>` holding the `pages`
+      const ul = document.createElement("UL");
+      div.appendChild(ul);
+      // Create the `pages`
+      group.pages.forEach((page) => {
+        const li = document.createElement("LI");
+        ul.appendChild(li);
+        const a = document.createElement("A");
+        li.appendChild(a);
+        a.setAttribute("href", page.href);
+        a.innerHTML = page.title;
+      });
+    });
+  }
+
+
+
+  /* SECTION: Change sorting on change of "Sort by:" field */
+
+  /** String designating alphabetical sorting of the glossary. */
+  const sortAlphabetical = "sort-alphabetical";
+
+  /**
+   * Get "Sort by:" radio buttons.
+   * This is a thunk so that their current state of them may be retrieved at multiple different times.
+   * @returns {HTMLElement[]}
+   *  An array holding all of the "Sory by:" `<input type="radio">`s
+   */
+  const getSortByRadioInputs = () => (
+    Array.from(
+      document
+      .getElementById("sort-by-container")
+      .children
+    ).filter((element) => (element.tagName === "DIV"))
+    .flatMap((element) => (Array.from(element.children)))
+    .filter((element) => (element.tagName === "INPUT" && element.type === "radio"))
   );
-  console.debug(
-    fuzzilySearchForPage("adjunction")
-  );
-  // ::DEBUG
+  
+
+  /**
+   * Handle change on "Sort by:" field, producing a list of pages for the user.
+   * @param {string} sortMethod
+   *  Method to switch to sorting to
+   * @param {PointerEvent} e
+   *  The event triggering this callback
+   */
+  const handleSortBy = (sortMethod, e) => {
+    try {
+      const groups =
+        sortMethod === sortAlphabetical
+        ? groupAlphabetically(pages.pages)
+        : groupByTopic(pages.pages)
+      ;
+      if (groups === null) {
+        throw new Error("Groups were unable to be formed!");
+      }
+      overridePageList(
+        groups
+        .sort((a, b) => (compare(a.groupName, b.groupName)))
+        .map((group) => ({ groupName: group.groupName, pages: sortAlphabetically(group.pages) }))
+      );
+    } catch (exception) {
+      showErrorMessage();
+    }
+  };
+
+
+
+  /* SECTION: Error handling */
+
+  /**
+   * Show an error message to the user.
+   */
+  function showErrorMessage() {
+    document.getElementById("glossary-error-message").classList.remove("hidden");
+    document.getElementById("glossary-error-timestamp").innerText = `Timestamp: ${new Date().toString()}`
+  }
+
+
+
+  /* LAUNCH: Actions to be taken once the DOM is loaded */
+
+  // Add event listener for changes to the "Sort by:" field
+  getSortByRadioInputs()
+    .forEach((radio) => {
+      radio.addEventListener("click", (e) => handleSortBy(radio.value, e));
+    })
+  ;
+
+  // Produce default list of pages
+  handleSortBy(sortAlphabetical, new Event(""));
+  // Show results to the user
+  document.getElementById("loading-spinner").classList.add("hidden");
+  document.getElementById("sort-by-container").classList.remove("hidden");
+  document.getElementById("page-list").classList.remove("hidden");
 });

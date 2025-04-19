@@ -1,0 +1,1 @@
+SOURCE: https://commons.wikimedia.org/wiki/File:Loading_2_transparent.gif

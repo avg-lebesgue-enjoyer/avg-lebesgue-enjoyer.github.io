@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>
+      Suggestions Box - Empty Limit
+    </title>
+    <link rel="icon" href="asset/logo/logo-128-round.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="script/suggestions.js"></script>
+  </head>
+  <body>
+    <nav>
+      <a href="index.html">
+        <div class="logo">
+          <img src="asset/logo/logo-270.png" alt="Logo">
+        </div>
+      </a>
+      <div class="link-container">
+        <a href="FIXME:" class="nav-link" onclick="alert('FIXME: aint done mate')">
+          Glossary
+        </a>
+        <a href="suggestions.html" class="nav-link this-page">
+          Suggestions
+        </a>
+        <a href="about.html" class="nav-link">
+          About
+        </a>
+      </div>
+    </nav>
+    <main class="one-column">
+      <div class="hero-image">
+        <img
+          srcset="asset/hero-art/suggestions-art-435.png 435w,
+                  asset/hero-art/suggestions-art-870.png 870w,
+                  asset/hero-art/suggestions-art-1740.png 1740w,
+                  asset/hero-art/suggestions-art-2610.png 2610w,
+                  asset/hero-art/suggestions-art-3480.png"
+          sizes=" (max-width: 435px) 435px,
+                  (max-width: 870px) 870px,
+                  (max-width: 1740px) 1740px,
+                  (max-width: 2610px) 2610px,
+                  3480px"
+          src="asset/hero-art/suggestions-art-3480.png"
+          alt="A cat sleeping atop a mailbox in the sunset"
+        >
+      </div>
+      <section>
+        <h1>
+          Suggestions Box
+        </h1>
+        <p id="suggestions-tip">
+          Have you seen the <a href="https://github.com/avg-lebesgue-enjoyer/avg-lebesgue-enjoyer.github.io">GitHub repository</a> for this website? If you can, please make your own contributions and pull request!
+        </p>
+        <form id="suggestion-form">
+          <label for="suggestion-topic">
+            Topic:
+          </label>
+          <input
+            type="text"
+            class="form-text"
+            name="suggestion-topic"
+            id="suggestion-topic"
+            placeholder="Example: 'Adjunction page: Include universal morphism definition'"
+            required
+          >
+          <br>
+          <label for="suggestion-body">
+            Your suggestion for this topic:
+          </label>
+          <textarea
+            name="suggestion-body"
+            id="suggestion-body"
+            placeholder="Example: 'The universal morhpsim definition is really important! Please include it.'"
+            required
+          ></textarea>
+          <br>
+          <label for="suggestion-type">
+            Suggestion type:
+          </label>
+          <fieldset id="suggestion-type">
+            <div>
+              <input type="radio" name="suggestion-type" value="Improve existing page" checked>
+              <label>Improve existing page</label>
+            </div>
+            <div>
+              <input type="radio" name="suggestion-type" value="New page">
+              <label>New page</label>
+            </div>
+            <div>
+              <input type="radio" name="suggestion-type" value="Other">
+              <label>Other</label>
+            </div>
+          </fieldset>
+          <br>
+          <label for="suggestion-body">
+            Other comments:
+          </label>
+          <textarea
+            name="suggestion-comments"
+            id="suggestion-comments"
+            placeholder="Example: 'This would require updating the result about the equivalence of the various adjunction definitions.'"
+          ></textarea>
+          <br>
+          <input type="submit" class="submit" value="Submit">
+        </form>
+        <div class="error hidden" id="suggestion-error-message">
+          <p>
+            An error occurred while submitting your form! Please check the contents and try again. If this issue persists, consider opening an issue on this website's <a href="https://github.com/avg-lebesgue-enjoyer/avg-lebesgue-enjoyer.github.io">GitHub page</a>.
+          </p>
+          <p class="error" id="suggestion-error-timestamp">Timestamp: (will populate if the form is submitted unsuccessfully)</p>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <a href="index.html">
+        <div class="logo">
+          <img src="asset/logo/logo-270.png" alt="Logo">
+        </div>
+      </a>
+    </footer>
+  </body>
+</html>

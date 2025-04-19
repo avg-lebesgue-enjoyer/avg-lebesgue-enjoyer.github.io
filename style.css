@@ -22,6 +22,7 @@
   /* Text colours */
   --default-text-colour: #000000;
   --light-text-colour: var(--default-background-colour);
+  --error-text-colour: #ff0000;
   /* Border colours */
   --border-colour: #000000;
   /* Other colours */
@@ -34,10 +35,15 @@
 
   /* Borders */
   --border-thickness: 2px;
+  --border-radius: 6px;
+
+  /* Fonts */
+  --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 :root {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: var(--font-family);
+  font-size: medium;
   background-color: #fefefe;
   color: var(--default-text-colour);
 }
@@ -60,6 +66,22 @@ a {
       It is therefore important that it be the same as the website's accent colour.
   */
   color: var(--accent-colour);
+}
+
+
+
+/* SECTION: Utility classes */
+
+/* Utility class to hide an element entirely */
+.hidden, .hidden * {
+  display: none;
+}
+
+/* Utility class to mark up error text */
+.error {
+  color: var(--error-text-colour);
+  font-style: italic;
+  text-align: center;
 }
 
 
@@ -120,7 +142,7 @@ nav {
   margin-right: 5px;
   padding: 6px;
   border: var(--border-thickness) solid var(--border-colour);
-  border-radius: 6px;
+  border-radius: var(--border-radius);
   background-color: var(--light-accent-colour);
   color: var(--default-text-colour);
   font-size: medium;
@@ -245,6 +267,80 @@ svg.reading-order path.arrow {
   fill: var(--arrow-colour);
   stroke: var(--arrow-colour);
   stroke-width: var(--arrow-stroke-width);
+}
+
+
+
+/* SECTION: Form styling on `suggestions.html` */
+
+#suggestions-tip {
+  text-align: center;
+  font-style: italic;
+}
+
+main form {
+  /* Variables */
+  --form-label-spacing: -0.5em;
+  --form-element-spacing: 1em;
+  --form-element-margin: 10%;
+  /* Display */
+  display: flex;
+  flex-direction: column;
+  gap: var(--form-element-spacing);
+}
+
+main form > label {
+  margin-top: var(--form-label-spacing);
+  margin-bottom: var(--form-label-spacing);
+}
+
+/* Style all fields in the form with consistent background and placeholder text */
+main form > input.form-text,
+main form > textarea,
+main form > fieldset {
+  /* Font */
+  font-family: var(--font-family);
+  font-size: small;
+  /* Border */
+  background-color: var(--secondary-background-colour);
+  border: calc(var(--border-thickness) / 2) solid var(--border-colour);
+  border-radius: var(--border-radius);
+}
+main form > input::placeholder,
+main form > textarea::placeholder {
+  font-family: var(--font-family);
+  font-size: small;
+}
+
+main form > fieldset {
+  /* Size bounding box */
+  max-width: 60em;
+  width: 30em;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 2em;
+  padding-right: 2em;
+  /* Align internal items */
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+@media (width <= 700px) {
+  main form > fieldset {
+    flex-direction: column;
+    min-width: 0;
+  }
+}
+
+main form > input.submit {
+  /* Sizing */
+  width: 10em;
+  margin-left: auto;
+  margin-right: auto;
+  /* Colouring */
+  background-color: var(--light-accent-colour);
+  border: var(--border-thickness) solid var(--border-colour);
+  border-radius: var(--border-radius);
 }
 
 

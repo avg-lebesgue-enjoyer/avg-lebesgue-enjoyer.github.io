@@ -463,6 +463,20 @@ main .glossary-group ul {
 
 
 
+/* SECTION: Discussion- and Proof-family pages */
+
+main.family {
+  /* Arrangement of internal items */
+  display: grid;
+  grid-template-areas: "contents-bar content sidenotes-bar";
+  grid-template-columns: 1fr 2.66fr 1fr;
+  gap: 5px;
+  /* Border */
+  border: 2px solid var(--DEBUG-colour);
+}
+
+
+
 /* SECTION: Loading spinners */
 
 .loading-spinner {

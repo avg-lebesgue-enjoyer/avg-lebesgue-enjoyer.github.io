@@ -41,7 +41,7 @@ def adjunctionPage : Page :=
     [ .mk
         "Hom-set definition"
         [ .body
-            [ .p "The hom-set definition of an adjunction is how adjunctions are most typically introduced. Let $\\mathsf{C}$ and $\\mathsf{widetilde{C}}$ be categories. A hom-set adjunction consists of a pair of opposing functors"
+            [ .p "The hom-set definition of an adjunction is how adjunctions are most typically introduced. Let $\\mathsf{C}$ and $\\mathsf{\\widetilde{C}}$ be categories. A hom-set adjunction consists of a pair of opposing functors"
             , .cda { href := opposingFunctorsHref }
             , .eqn homSetIsomorphismAlign
             , .p "natural in $x \\in \\mathsf{C}^{\\mathrm{op}}$ and in $\\tilde{y} \\in \\widetilde{\\mathsf{C}}."

@@ -221,7 +221,7 @@ main .hero-image > img {
 }
 
 
-main section > h1 {
+main h1 {
   /* Font */
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   font-weight: bolder;
@@ -421,14 +421,12 @@ main #page-list {
   flex-direction: row;
   flex-wrap: wrap;
   align-items: baseline;
-  /* justify-content: center; */
   justify-content: space-evenly;
 }
 
 main #page-list .glossary-group {
   /* Size */
   max-width: 30%;
-  /* min-width: 30%; */
   width: 30%;
 }
 @media (width <= 700px) {
@@ -447,7 +445,6 @@ main .glossary-group h2 {
   font-size: x-large;
   /* Other details */
   text-align: center;
-  /* text-decoration: underline; */
   text-decoration-style: double;
   text-decoration-color: var(--light-underline-colour);
   margin-bottom: 1em;
@@ -466,12 +463,121 @@ main .glossary-group ul {
 /* SECTION: Discussion- and Proof-family pages */
 
 main.family {
-  /* Arrangement of internal items */
-  display: grid;
-  grid-template-areas: "contents-bar content sidenotes-bar";
-  grid-template-columns: 1fr 2.66fr 1fr;
-  gap: 5px;
+  --gap: 1em;
+  --bar-width: 15vw;
+  /* Padding */
+  padding-top: var(--gap);
+  padding-bottom: var(--gap);
+  /* Internal flow */
+  display: flex;
+  flex-direction: row;
+  gap: var(--gap);
+}
+
+/* Sizing of elements in a `<main class="family">` */
+main.family .contents-bar,
+main.family .sidenotes-bar {
+  /* Positioning and size */
+  width: calc(var(--bar-width) - 2 * var(--gap));
+  max-width: calc(var(--bar-width) - 2 * var(--gap));
+  padding: var(--gap);
+}
+main.family .content {
+  /* Sizing */
+  width: calc(100vw - 2 * (var(--bar-width) + var(--gap)));
+}
+
+
+main.family .contents-bar,
+main.family .sidenotes-bar {
+  /* Text */
+  text-align: left;
+  /* Internal flow */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Style the bar titles */
+main.family .contents-bar .bar-title,
+main.family .sidenotes-bar .bar-title {
+  /* Division */
+  padding-bottom: calc(2 * var(--border-thickness));
+  border-bottom: var(--border-thickness) solid var(--border-colour);
+  /* Internal flow */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+}
+main.family .contents-bar .bar-title button,
+main.family .sidenotes-bar .bar-title button {
+  /* Text */
+  font-size: small;
+  /* Colour */
+  background-color: var(--secondary-background-colour);
   /* Border */
+  border: 1px solid var(--border-colour);
+  border-radius: var(--border-radius);
+}
+
+main.family .contents-bar ul {
+  list-style-position: outside; /* NOTE: Different to the `<ul>`s in `glossary.html`. */
+  padding-left: 1em;
+}
+
+
+main.family .content {
+  /* --section-margins: */
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+}
+
+main.family .content h2 {
+  /* Spacing */
+  margin-top: 0;
+  margin-bottom: 0;
+  /* Font */
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-weight: bolder;
+  font-variant: small-caps;
+  font-size: x-large;
+  /* Other details */
+  text-align: center;
+  text-decoration: underline;
+  text-decoration-style: double;
+  text-decoration-color: var(--light-underline-colour);
+}
+
+main.family .content section {
+  /* Internal flow */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/*
+  FIXME: I'm NOT happy with the dead waste of space that `q.uiver` seems to give...
+  FIXME: Actually, there are deeper problems: how would we standardise the font sizes of
+    inlined diagrams, when used like "gimme an equation" (i.e. outside TVs)?
+    ~~> Maybe for those use cases, we don't invoke quiver. Maybe those should be handled by
+    the (limited) pool of stuff provided by `amsmath`.
+    ~~> That sounds like the most sensible solution, honestly. I'm not gonna rewrite `q.uiver`
+    in a day.
+    ~~> TODO: Do it
+*/
+main.family .content iframe.block-static-diagram {
+  --width: 40vw;
+  --quiver-padding: 50px; /* TODO: or whatever it is... */
+  --bounding-width: calc(var(--width) + var(--quiver-padding));
+  /* Sizing */
+  width: var(--width);
+  max-width: var(--width);
+  min-width: var(--width);
+  /* Change to `display: block` (`<iframe>` is `inline` by default) */
+  display: block;
+  border: none;
   border: 2px solid var(--DEBUG-colour);
 }
 

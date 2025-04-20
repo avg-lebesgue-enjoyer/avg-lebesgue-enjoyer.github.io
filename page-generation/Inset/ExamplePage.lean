@@ -13,10 +13,11 @@ import Inset.BuildPages
 section «in lean»
 
 -- NOTE: `q.uiver` URLs
-private def opposingFunctorsHref : String := "https://q.uiver.app/#q=WzAsMixbMCwwLCJcXGNhdHtDfSJdLFsyLDAsIlxcY2F0e1xcd3Rse0N9fSJdLFswLDEsIkYiLDAseyJvZmZzZXQiOi0yfV0sWzEsMCwiVSIsMCx7Im9mZnNldCI6LTJ9XV0=&macro_url=https%3A%2F%2Fgist.githubusercontent.com%2Favg-lebesgue-enjoyer%2Ffacad9c53abe5718a59f4400e28c87f3%2Fraw%2Fbf740cfaac1cf36f7c5faed44562c7fe9fd9f8f3%2Fquiver-preamble.tex"
 private def triangleIdentitiesHref : String := "https://q.uiver.app/#q=WzAsNixbMiwwLCJGVUYiXSxbMiwyLCJGIl0sWzAsMCwiRiJdLFs0LDAsIlUiXSxbNiwwLCJVRlUiXSxbNiwyLCJVIl0sWzIsMCwiRiBcXGV0YSJdLFswLDEsIlxcdmFyZXBzaWxvbiBGIl0sWzIsMSwiMV9GIiwyXSxbMyw0LCJcXGV0YSBVIl0sWzQsNSwiVVxcdmFyZXBzaWxvbiJdLFszLDUsIjFfVSIsMl1d&macro_url=https%3A%2F%2Fgist.githubusercontent.com%2Favg-lebesgue-enjoyer%2Ffacad9c53abe5718a59f4400e28c87f3%2Fraw%2Fbf740cfaac1cf36f7c5faed44562c7fe9fd9f8f3%2Fquiver-preamble.tex"
 private def raplHref : String := "https://q.uiver.app/#q=WzAsNSxbMCwwLCJcXGNhdHtDfV57XFxjYXR7Sn19Il0sWzAsMiwiXFxjYXR7Q30iXSxbMiwwLCJcXGNhdHtcXHd0bHtDfX1ee1xcY2F0e0p9fSJdLFsyLDIsIlxcY2F0e1xcd3Rse0N9fSAiXSxbMSwxLCJcXGNpcmNsZWFycm93bGVmdF97XFxzaW1lcX0iXSxbMCwxLCJcXGxpbV97XFxjYXR7Sn19IiwyXSxbMiwzLCJcXGxpbV97XFxjYXR7Sn19Il0sWzEsMywiVSIsMl0sWzAsMiwiVSBcXGNpcmMgLSJdXQ==&macro_url=https%3A%2F%2Fgist.githubusercontent.com%2Favg-lebesgue-enjoyer%2Ffacad9c53abe5718a59f4400e28c87f3%2Fraw%2Fbf740cfaac1cf36f7c5faed44562c7fe9fd9f8f3%2Fquiver-preamble.tex"
 -- NOTE: `\begin{align*} ⋯ \end{align*}` contents
+private def opposingFunctorsAlign : String :=
+  "F : \\mathsf{C} \\rightleftarrows \\mathsf{\\widetilde{C}} : U"
 private def homSetIsomorphismAlign : String :=
   " \\varphi_{x, \\tilde{y}}
     : \\widetilde{\\mathsf{C}}(F x, \\tilde{y})
@@ -42,7 +43,8 @@ def adjunctionPage : Page :=
         "Hom-set definition"
         [ .body
             [ .p "The hom-set definition of an adjunction is how adjunctions are most typically introduced. Let $\\mathsf{C}$ and $\\mathsf{\\widetilde{C}}$ be categories. A hom-set adjunction consists of a pair of opposing functors"
-            , .cda { href := opposingFunctorsHref }
+            , .eqn opposingFunctorsAlign
+            , .p "and a family of isomorphisms"
             , .eqn homSetIsomorphismAlign
             , .p "natural in $x \\in \\mathsf{C}^{\\mathrm{op}}$ and in $\\tilde{y} \\in \\widetilde{\\mathsf{C}}."
             ]
@@ -52,7 +54,7 @@ def adjunctionPage : Page :=
         [ .body
             [ .p "The unit-counit definition is useful in 2-category theory, and for practically working with adjunctions."
             , .p "Let $\\mathsf{C}$ and $\\widetilde{\\mathsf{C}}$ be categories. A unit-counit adjunction consists of a pair of opposing functors"
-            , .cda { href := opposingFunctorsHref }
+            , .eqn opposingFunctorsAlign
             , .p "and two natural transformations"
             , .eqn unitCounitAlign
             , .p "such that the triangle identities shown below commute:"

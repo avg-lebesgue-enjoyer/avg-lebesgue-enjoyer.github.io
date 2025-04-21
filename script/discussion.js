@@ -41,28 +41,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-  /* SECTION: Hide sidebars */
+  /* SECTION: Toggle sidebars */
 
-  /** Shared mutable state for the `toggleContentsBar` and `toggleSidenotesBar` functions. */
-  let sidebarState = {
-    /** `true` just when the contents bar is shown. */
-    contentsShown: true,
-    /** `true` just when the sidenotes bar is shown. */
-    sidenotesShown: true
-  };
-
+  /** Toggle whether the contents bar is displayed or not. */
   const toggleContentsBar = () => {
     const contentsBar = document.getElementById("contents-bar");
     contentsBar.classList.toggle("hidden");
-    sidebarState[contentsShown] = ! sidebarState[contentsShown];
   }
   
+  /** Toggle whether the sidenotes bar is displayed or not. */
   const toggleSidenotesBar = () => {
     const sidenotesBar = document.getElementById("sidenotes-bar");
     sidenotesBar.classList.toggle("hidden");
-    sidebarState[sidenotesShown] = ! sidebarState[sidenotesShown];
   }
-  
 
 
 
@@ -156,6 +147,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Add event listeners
   document.addEventListener("keydown", handleKeyDown);
+  document.getElementById("contents-bar-hide").onclick = toggleContentsBar;
+  document.getElementById("sidenotes-bar-hide").onclick = toggleSidenotesBar;
 
   // Render all `KaTeX` content in the document.
   // SOURCE: https://katex.org/docs/autorender

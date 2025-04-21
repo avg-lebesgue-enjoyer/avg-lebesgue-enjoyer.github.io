@@ -77,6 +77,7 @@ a {
 /* Utility class to hide an element entirely */
 .hidden, .hidden * {
   display: none;
+  visibility: hidden;
 }
 
 /* Utility class to mark up error text */
@@ -474,22 +475,67 @@ main.family {
   gap: var(--gap);
 }
 
-/* Sizing of elements in a `<main class="family">` */
-main.family .contents-bar,
-main.family .sidenotes-bar {
+/*
+  Sizing of elements in a `<main class="family">`
+  By default, the display looks like:
+    [ #contents-bar |             #content             | #sidenotes-bar ]
+  On a display WIDER THAN `1000px`, either of the sidebars may be collapsed,
+  resulting in one of the following instead:
+    [                     #content                     | #sidenotes-bar ]
+    [ #contents-bar |                     #content                      ]
+    [                             #content                              ]
+  On a display AT MOST `1000px` WIDE, the sidebars are permanently hidden:
+                         [        #content        ]
+*/
+main.family #contents-bar,
+main.family #sidenotes-bar {
   /* Positioning and size */
   width: calc(var(--bar-width) - 2 * var(--gap));
   max-width: calc(var(--bar-width) - 2 * var(--gap));
+  /* min-width: 0; */
   padding: var(--gap);
 }
-main.family .content {
+main.family #content {
   /* Sizing */
   width: calc(100vw - 2 * var(--bar-width) - 3 * var(--gap));
 }
+main.family #contents-bar.hidden,
+main.family #sidenotes-bar.hidden {
+  width: 0;
+}
+main.family #contents-bar.hidden *,
+main.family #sidenotes-bar.hidden * {
+  width: 0;
+}
+@media (width > 1000px) {
+  :root:has(main.family #contents-bar.hidden) main.family #content {
+    width: calc(100vw - var(--bar-width) - 5 * var(--gap));
+  }
+  :root:has(main.family #sidenotes-bar.hidden) main.family #content {
+    width: calc(100vw - var(--bar-width) - 5 * var(--gap));
+  }
+  :root:has(main.family #contents-bar.hidden):has(main.family #sidenotes-bar.hidden) main.family #content {
+    width: 100%;
+  }
+}
+@media (width <= 1000px) {
+  main.family #content {
+    width: 100%;
+  }
+  main.family #contents-bar,
+  main.family #sidenotes-bar {
+    width: 0;
+  }
+  main.family #contents-bar *,
+  main.family #sidenotes-bar * {
+    display: none;
+    visibility: hidden;
+  }
+}
 
 
-main.family .contents-bar,
-main.family .sidenotes-bar {
+main.family #contents-bar,
+main.family #sidenotes-bar {
   /* Text */
   text-align: left;
   /* Internal flow */
@@ -523,20 +569,45 @@ main.family .bar-title button:hover {
   color: var(--light-text-colour);
 }
 
-main.family .contents-bar ul {
+
+main.family #contents-bar ul {
   list-style-position: outside; /* NOTE: Different to the `<ul>`s in `glossary.html`. */
-  padding-left: 1em;
+  padding-left: 2em;
 }
 
+/*
+  To get the contents bar to fix to the side of the window and still look nice, we use two containers.
+  The outer container inherits the sizing of the `#contents-bar` itself, and has `position: fixed;`.
+  The inner container arranges its children *within* the fixed outer container.
+*/
+main.family #contents-bar-inner-container {
+  width: 100%; /* Set bounding box for `position: fixed;` inner content */
+}
+main.family #contents-bar-outer-container {
+  /* Ensure the contents bar does not overlap the main content */
+  max-width: calc(var(--bar-width) - 2 * var(--gap));
+  /* Fix self to window */
+  position: fixed;
+  /* Align inner content */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 
-main.family .content {
+/* main.family #contents-bar > * {
+  position: fixed;
+} */
+
+
+main.family #content {
   /* --section-margins: */
   display: flex;
   flex-direction: column;
   gap: 3em;
 }
 
-main.family .content h2 {
+main.family #content h2 {
   /* Sizing and spacing */
   width: 90%;
   margin-top: 0;
@@ -552,7 +623,7 @@ main.family .content h2 {
   border-bottom: var(--border-thickness) solid var(--light-border-colour);
 }
 
-main.family .content section {
+main.family #content section {
   /* Internal flow */
   display: flex;
   flex-direction: column;
@@ -560,13 +631,13 @@ main.family .content section {
   justify-content: flex-start;
 }
 
-main.family .content section p {
+main.family #content section p {
   width: 100%;
   text-align: left;
 }
 
 
-main.family .content iframe.block-static-diagram {
+main.family #content iframe.block-static-diagram {
   --width: 40vw;
   width: var(--width);
   max-width: var(--width);

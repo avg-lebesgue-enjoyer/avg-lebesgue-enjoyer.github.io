@@ -61,8 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
       { title:  "Initial and Terminal Objects",
         topic:  topicUniversalConstructions,
         href:   "discussion/initial-terminal-objects.html",
-        tags:   [ "initial objects",      // also matches "initial" and "objects"
-                  "terminal objects", ],  // also matches "terminal"
+        tags:   [ "initial and terminal objects" ],  // also matches "initial", "terminal" and "object"
       },
       { title:  "Limits",
         topic:  topicUniversalConstructions,

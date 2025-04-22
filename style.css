@@ -16,6 +16,10 @@
 
 /* Global variables */
 :root {
+  /* ANIMATION */
+  --transition-duration: 0.25s;
+
+  /* COLOURS */
   /* Background colours */
   --default-background-colour: #fefefe;
   --secondary-background-colour: #faf8f8;
@@ -31,16 +35,16 @@
   --light-accent-colour: #a6c3ff;
   --accent-colour: #3366cc;
   --arrow-colour: #000000;
+  
+  /* FONTS */
+  --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
-  /* Spacing */
-  --section-spacing: 1em;
-
-  /* Borders */
+  /* BORDERS */
   --border-thickness: 2px;
   --border-radius: 6px;
 
-  /* Fonts */
-  --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  /* SPACING */
+  --section-spacing: 1em;
 }
 
 :root {
@@ -461,7 +465,7 @@ main .glossary-group ul {
 
 
 
-/* SECTION: Discussion- and Proof-family pages */
+/* SECTION: Discussion- and Proof-family pages: Overall */
 
 main.family {
   --gap: 1em;
@@ -487,17 +491,28 @@ main.family {
   On a display AT MOST `1000px` WIDE, the sidebars are permanently hidden:
                          [        #content        ]
 */
+main.family {
+  /*
+    The `width`s of the `#content` and the two sidebars (`#contents-bar` and `#sidenotes-bar`) are specified as
+    variables so that its children may access this width too.
+    For example, the sidenotes need to know how far right to be moved, which depends on the `--content-width` and
+    the `--contents-bar-width`.
+  */
+  --content-width: calc(100vw - 2 * var(--bar-width) - 3 * var(--gap));
+  --sidebar-width: calc(var(--bar-width) - 2 * var(--gap)); /* Default width for the sidebars */
+  --contents-bar-width: var(--sidebar-width);
+  --sidenotes-bar-width: var(--sidebar-width);
+  --sidenote-left-offset: calc(var(--bar-width) + var(--content-width) + 3 * var(--gap));
+}
 main.family #contents-bar,
 main.family #sidenotes-bar {
   /* Positioning and size */
-  width: calc(var(--bar-width) - 2 * var(--gap));
-  max-width: calc(var(--bar-width) - 2 * var(--gap));
-  /* min-width: 0; */
+  width: var(--sidebar-width);
+  max-width: var(--sidebar-width);
   padding: var(--gap);
 }
 main.family #content {
-  /* Sizing */
-  width: calc(100vw - 2 * var(--bar-width) - 3 * var(--gap));
+  width: var(--content-width);
 }
 main.family #contents-bar.hidden,
 main.family #sidenotes-bar.hidden {
@@ -508,31 +523,36 @@ main.family #sidenotes-bar.hidden * {
   width: 0;
 }
 @media (width > 1000px) {
-  :root:has(main.family #contents-bar.hidden) main.family #content {
-    width: calc(100vw - var(--bar-width) - 5 * var(--gap));
+  :root:has(main.family #contents-bar.hidden) main.family {
+    --content-width: calc(100vw - var(--bar-width) - 5 * var(--gap));
+    --contents-bar-width: 0;
+    --sidenote-left-offset: calc(var(--content-width) + 5 * var(--gap));
   }
-  :root:has(main.family #sidenotes-bar.hidden) main.family #content {
-    width: calc(100vw - var(--bar-width) - 5 * var(--gap));
+  :root:has(main.family #sidenotes-bar.hidden) main.family {
+    --content-width: calc(100vw - var(--bar-width) - 5 * var(--gap));
+    --sidenotes-bar-width: 0;
   }
-  :root:has(main.family #contents-bar.hidden):has(main.family #sidenotes-bar.hidden) main.family #content {
-    width: 100%;
+  :root:has(main.family #contents-bar.hidden):has(main.family #sidenotes-bar.hidden) main.family {
+    --content-width: 100%;
   }
 }
 @media (width <= 1000px) {
-  main.family #content {
-    width: 100%;
-  }
-  main.family #contents-bar,
-  main.family #sidenotes-bar {
-    width: 0;
+  main.family {
+    --content-width: 100%;
+    --sidebar-width: 0;
   }
   main.family #contents-bar *,
-  main.family #sidenotes-bar * {
+  main.family #sidenotes-bar *,
+  main.family .sidenote {
+    width: 0;
     display: none;
     visibility: hidden;
   }
 }
 
+
+
+/* SECTION: Discussion- and Proof-family pages: Sidebars */
 
 main.family #contents-bar,
 main.family #sidenotes-bar {
@@ -595,10 +615,39 @@ main.family #contents-bar-outer-container {
   justify-content: center;
 }
 
-/* main.family #contents-bar > * {
-  position: fixed;
-} */
 
+
+/* SECTION: Discussion- and Proof-family pages: Sidenotes */
+
+main.family #content .sidenote {
+  /* Positioning */
+  position: absolute;
+  left: var(--sidenote-left-offset);
+  width: calc(var(--bar-width) - 2 * var(--gap));
+  /* Text */
+  font-size: medium;
+  text-align: left;
+  /* Animation */
+  transition-duration: var(--transition-duration); /* Background colour and border transitions when relevant `.sidenote-anchor:hover`. */
+}
+
+main.family #content .sidenote-container:has(.sidenote-anchor:hover) .sidenote {
+  background-color: var(--light-accent-colour);
+  border-radius: var(--border-radius);
+}
+
+/* Hide sidenotes if the `#sidenotes-bar` is `.hidden`. */
+@media (width > 1000px) {
+  :root:has(main.family #sidenotes-bar.hidden) main.family .sidenote {
+    display: none;
+    visibility: hidden;
+    width: 0;
+  }
+}
+
+
+
+/* SECTION: Discussion- and Proof-family pages: Main content */
 
 main.family #content {
   /* --section-margins: */
@@ -675,7 +724,6 @@ main.family .block-section-element .block-static-diagram-container {
 main.family .outlink {
   --fill-colour: var(--secondary-background-colour);
   --font-colour: var(--accent-colour);
-  --transition-duration: 0.25s;
   transition: var(--transition-duration); /* Transition changes internal colours by redefining the `--fill` and `--font-colour` variables */
   width: 8em;
 }

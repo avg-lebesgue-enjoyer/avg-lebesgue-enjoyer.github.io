@@ -143,7 +143,6 @@ document.addEventListener("DOMContentLoaded", () => {
     ).filter((child) => (child.tagName === "SECTION"))
     .map((section) => (section.id))
   ;
-  console.debug(sectionIds);
 
   // Add event listeners
   document.addEventListener("keydown", handleKeyDown);

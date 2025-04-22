@@ -21,9 +21,6 @@
 */
 
 document.addEventListener("DOMContentLoaded", () => {
-
-
-
   /* SECTION: Jumping around page */
 
   /**

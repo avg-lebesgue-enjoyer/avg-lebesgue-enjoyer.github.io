@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-  /* SECTION: jumpToSection */
+  /* SECTION: Jumping around page */
 
   /**
    * Jump to a section by specifying its ID
@@ -37,6 +37,10 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (exception) {
       // squash
     }
+  }
+
+  function jumpToTop() {
+    window.scrollTo(0, 0);
   }
 
 
@@ -61,18 +65,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /**
    * Handle keypresses by the user. The following actions are supported:
-   *  `"q"`:  Jump to the section at `sectionIds[0]`
-   *  `"w"`:  Jump to the section at `sectionIds[1]`
-   *  `"e"`:  Jump to the section at `sectionIds[2]`
-   *  `"r"`:  Jump to the section at `sectionIds[3]`
-   *  `"t"`:  Jump to the section at `sectionIds[4]`
-   *  `"y"`:  Jump to the section at `sectionIds[5]`
-   *  `"u"`:  Jump to the section at `sectionIds[6]`
-   *  `"i"`:  Jump to the section at `sectionIds[7]`
-   *  `"o"`:  Jump to the section at `sectionIds[8]`
-   *  `"p"`:  Jump to the section at `sectionIds[secitonIds.length - 1]`
-   *  `"a"`:  Toggle contents bar
-   *  `"f"`:  Toggle sidenotes bar
+   *  `"0"`:          Jump to top
+   *  `"1"`:          Jump to the section at `sectionIds[0]`
+   *  `"2"`:          Jump to the section at `sectionIds[1]`
+   *  `"3"`:          Jump to the section at `sectionIds[2]`
+   *  `"4"`:          Jump to the section at `sectionIds[3]`
+   *  `"5"`:          Jump to the section at `sectionIds[4]`
+   *  `"6"`:          Jump to the section at `sectionIds[5]`
+   *  `"7"`:          Jump to the section at `sectionIds[6]`
+   *  `"8"`:          Jump to the section at `sectionIds[7]`
+   *  `"9"`:          Jump to the section at `sectionIds[secitonIds.length - 1]`
+   *  `"c"`, `"a"`:   Toggle contents bar
+   *  `"s"`, `"f"`:   Toggle sidenotes bar
    * All alphabetic keys are case-insensitive.
    * @param {KeyboardEvent} e
    *  The event triggering this callback
@@ -84,40 +88,42 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       switch (e.key.toLowerCase()) {
         // Jump to section
-        case "q":
+        case "1":
           jumpToSection(sectionIds[0]);
           break;
-        case "w":
+        case "2":
           jumpToSection(sectionIds[1]);
           break;
-        case "e":
+        case "3":
           jumpToSection(sectionIds[2]);
           break;
-        case "r":
+        case "4":
           jumpToSection(sectionIds[3]);
           break;
-        case "t":
+        case "5":
           jumpToSection(sectionIds[4]);
           break;
-        case "y":
+        case "6":
           jumpToSection(sectionIds[5]);
           break;
-        case "u":
+        case "7":
           jumpToSection(sectionIds[6]);
           break;
-        case "i":
+        case "8":
           jumpToSection(sectionIds[7]);
           break;
-        case "o":
-          jumpToSection(sectionIds[8]);
-          break;
-        case "p":
+        case "9":
           jumpToSection(sectionIds[sectionIds.length - 1]);
           break;
+        case "0":
+          jumpToTop();
+          break;
         // Toggle sidebars
+        case "c":
         case "a":
           toggleContentsBar();
           break;
+        case "s":
         case "f":
           toggleSidenotesBar();
           break;

@@ -513,6 +513,8 @@ main.family #sidenotes-bar {
 }
 main.family #content {
   width: var(--content-width);
+  margin: 0;
+  padding: 0;
 }
 main.family #contents-bar.hidden,
 main.family #sidenotes-bar.hidden {

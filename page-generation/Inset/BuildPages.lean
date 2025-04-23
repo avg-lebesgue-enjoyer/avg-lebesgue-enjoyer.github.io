@@ -1,210 +1,508 @@
 /-
   **FILE:** `Inset/BuildPages.lean`
-  **PURPOSE:** Provide types and functions for constructing pages
+  **PURPOSE:** Provide functions for transforming `inset`-encoded pages into actual `.html` files.
 -/
 
 /- IMPORTS: -/
 
-
-
-/- SECTION: Basic type aliases -/
-
-/--
-  A URL.
-
-  `abbrev` for `String`.
--/
-abbrev URL : Type := String
-
-/--
-  A display-style `\begin{align*} ⋯ \end{align*}` equation.
-
-  `abbrev` for a `String` that would go into the `⋯` above.
--/
-def Equation : Type := String
+import Inset.EncodePages
 
 
 
-/- SECTION: Text -/
+/- SECTION: Miscellaneous helpers -/
+
+/-- Wrap the `pageName` with extra stuff to display in the `<title>`. -/
+private def titleTemplate (pageName : String) : String :=
+  s!"{pageName} - Empty Limit"
+
+/-- `true` iff `it` is a valid character for a HTML `id=""`. -/
+private def isValidIdChar (it : Char) : Bool :=
+  it.isAlphanum || it == '-' || it == '_' || it == ':' || it == '.'
 
 /--
-  Some text.
+  Convert the given section `title` to an `id=""`.
 
-  TODO: Upgrade this to handle `KaTeX` and `<a>` and footnotes etc.
+  Spaces `' '`are converted to `'-'`.
 -/
-def Text : Type := String
+private def sectionTitleToId (title : String) : String :=
+  title
+  |>.toList
+  |>.dropWhile (not ∘ Char.isAlpha)
+  |>.map (fun c => if c == ' ' then '-' else c)
+  |>.filter isValidIdChar
+  |>.asString
+
+/-- Compute the `id=""` of a `Section`. -/
+private def Section.id (it : Section) : String :=
+  sectionTitleToId it.title
 
 
 
-/- SECTION: Diagrams -/
+/- SECTION: Helper types and functions for writing -/
 
-/-- A (static) commutative diagram. -/
--- FIXME: Check whether we'll actually use the `width` and `height` fields
-structure Diagram : Type where
-  /-- URL to diagram to render in an `<iframe>`, *without* the trailing `"&embed"`. -/
-  href : URL
-  /--
-    Width of the `<iframe>` to render. If `none`, allow the CSS to determine the width and height.
+/-- Alias for `String` representing the contents of a `.html` file. -/
+private abbrev HtmlOutput : Type := String
 
-    Default: `none`
+/-- State as a page is written -/
+private structure WriterState : Type where
+  /-- Current accumulated HTML output. -/
+  currentHtml : HtmlOutput := ""
+  /-- Current indentation level. -/
+  indentationLevel : Nat := 0
+  /-- Number of spaces per indentation level. -/
+  indentationSpaces : Nat := 2
+  /-- Whether or not this page qualifies as a Discussion-family page (i.e. no interactive diagrams). -/
+  okAsDiscussion : Bool := true
+  /-- The number of the next sidenote to print. -/
+  sidenoteNumber : Nat := 1
 
-    **FIXME: Check whether or not this is necessary.**
-  -/
-  width : Option Nat := none
-  /--
-    Height of the `<iframe>` to render. If `none`, allow the CSS to determine the width and height.
-
-    Default: `none`
-
-    **FIXME: Check whether or not this is necessary.**
-  -/
-  height : Option Nat := none
-
-/-- A single frame in an `InteractiveDiagram`. -/
-structure IDFrame : Type where
-  /-- The static `Diagram` in this frame. -/
-  cda : Diagram
-  /--
-    Optional explanatory text.
-
-    Default: `none`.
-  -/
-  text : Option Text := none
-  /--
-    Optional sidenote text.
-
-    Default: `none`.
-  -/
-  sidenote : Option Text := none
-
-/-- An interactive commutative diagram. -/
-def InteractiveDiagram : Type := List IDFrame
-
-
-
-/- SECTION: Body -/
-
-/-- An element to render in the `Body` of an `Element` -/
-inductive BodyElement : Type where
-  /-- A paragraph of `Text`. -/
-  | p : Text → BodyElement
-  /-- A (static) commutative `Diagram`. -/
-  | cda : Diagram → BodyElement
-  /--
-    A display-style `\begin{align*} ⋯ \end{align*}` equation.
-
-    Provide the string to be placed in `⋯` as an argument.
-  -/
-  | eqn : Equation → BodyElement
-  /-- An interactive commutative diagram. -/
-  | ida : InteractiveDiagram → BodyElement
-
-/-- The body of an `Element` or a `Block`. -/
-def Body : Type := List BodyElement
-
-
-
-/- SECTION: Block -/
-
-/-- The kind of a `Block`. -/
-inductive Block.Kind : Type where
-  /-- Designates a **Theorem**. -/
-  | thm : Kind
-  /-- Designates a **Proposition**. -/
-  | pro : Kind
-  /-- Designates a **Lemma**. -/
-  | lem : Kind
-  /-- Designates a **Definition**. -/
-  | dfn : Kind
-  /-- Designates an **Example**. -/
-  | exa : Kind
-  /-- Designates a **Remark**. -/
-  | rmk : Kind
-  /-- Designates something else, to be rendered using the provided `title`. -/
-  | other (title : String) : Kind
+/-- Give a string full of enough spaces to match the indentation level. -/
+private def WriterState.indentSpaces (s : WriterState) : String :=
+  List.replicate (s.indentationLevel * s.indentationSpaces) ' '
+  |>.asString
 
 /--
-  A link at the end of a `Block`.
-
-  Used, for example, to redirect from a theorem to its proof.
+  Get the `id=""` of the next sidenote.
+  Does not include the leading `#`.
+  Does not increment the sidenote number.
 -/
-structure OutLink where
-  /-- The `URL` to redirect to. -/
-  href : URL
-  /--
-    The label to render on the link.
+private def getSidenoteId : StateT WriterState Id String := do
+  pure s!"sidenote-{(←get).sidenoteNumber}"
 
-    Default: `"see proof"`
-  -/
-  label : String := "see proof"
+/-- Increment the number identifying the next sidenote to print. -/
+private def incrementSidenoteNumber : StateT WriterState Id Unit := do
+  set { (←get) with sidenoteNumber := (←get).sidenoteNumber + 1 }
 
-/-- A `Block` element, such as the statement of a theorem. -/
-structure Block : Type where
-  /-- The `Kind` of a `Block`. -/
-  kind : Block.Kind
-  /-- The `Body` of a `Block`. -/
-  body : Body
-  /--
-    Optional link at the end of the `Block`.
+/-- Append the given `html` to the `.currentHtml`. -/
+private def appendHtml (html : HtmlOutput) : StateT WriterState Id Unit := do
+  set { (←get) with currentHtml := (←get).currentHtml ++ s!"\n{(←get).indentSpaces}" ++ html }
 
-    Default: `none`.
-  -/
-  outLink? : Option OutLink := none
+/-- Increment the indentation level. -/
+private def indent : StateT WriterState Id Unit := do
+  set { (←get) with indentationLevel := (←get).indentationLevel + 1 }
 
+/-- Decrement the indentation level. -/
+private def unindent : StateT WriterState Id Unit := do
+  set { (←get) with indentationLevel := (←get).indentationLevel - 1 }
 
+/-- Run the `child` whilst indented. -/
+private def indented (child : StateT WriterState Id Unit) : StateT WriterState Id Unit := do
+  indent
+  child
+  unindent
 
-/- SECTION: TitledList -/
-
-/-- A `List β` which has been augmented with a `title : String` field. -/
-private structure TitledList (β : Type u) : Type u where
-  /-- The title. -/
-  title : String
-  /--
-    The underlying list.
-
-    Default: `[]`
-  -/
-  list : List β := []
-
-
-
-/- SECTION: Element, Section, Page -/
-
-/-- An element to render within a `Section`. -/
-inductive Element : Type where
-  /-- The `Body` of an `Element`. -/
-  | body : Body → Element
-  /-- The `Block` held by an `Element`. -/
-  | block : Block → Element
-
-/-- A section within a `Page`. -/
-def Section := TitledList Element
 /--
-  Construct a `Section`.
-
-  **Parameter `(title : String)`:**
-    The title of the section.
-
-  **Parameter `(elements : List Element := [])`:**
-    The underlying list of elements.
+  Write out the `(option, value)` pairs in `tagOptions` as follows:
+  ```html5
+  option0=\"value0\"
+  ⋯
+  optionN=\"valueN\"
+  ```
 -/
-def Section.mk (title : String) (elements : List Element := []) : Section :=
-  { title := title, list := elements }
-/-- Extract the list of `Element`s held in a `Section`. -/
-def Section.elements : Section → List Element := TitledList.list
+private def appendOptions (tagOptions : List (String × String)) : StateT WriterState Id Unit := do
+  for (option, value) in tagOptions do
+    appendHtml s!"{option}=\"{value}\""
 
-/-- A Discussion- or Proof-family webpage. -/
-def Page := TitledList Section
 /--
-  Construct a `Page`.
+  Print a `<tagName>` with no closing tag and no children.
 
-  **Parameter `(title : String)`:**
-    The title of the section.
-
-  **Parameter `(sections : List Element := [])`:**
-    The underlying list of sections.
+  If the `tagOptions` is `[]`, print as above.
+  If the `tagOptions` is non-empty, then print as follows:
+  ```html5
+  <tagName
+    option0 = "value0"
+    ⋯
+    optionN = "valueN"
+  >
+  ```
 -/
-def Page.mk (title : String) (sections : List Section := []) : Page :=
-  { title := title, list := sections }
-/-- Extract the list of `Section`s hend in a `Page`. -/
-def Page.sections : Page → List Section := TitledList.list
+private def justTag
+  (tagName : String)
+  (tagOptions : List (String × String))
+  : StateT WriterState Id Unit
+  := do
+    if let [] := tagOptions then do
+      appendHtml s!"<{tagName}>"
+    else if let [(option, value)] := tagOptions then do
+      appendHtml s!"<{tagName} {option}=\"{value}\">"
+    else do
+      appendHtml s!"<{tagName}"
+      indented <| appendOptions tagOptions
+      appendHtml s!">"
+
+/-- Print `<tagName>`, where the tag takes no options. -/
+private def justTag'
+  (tagName : String)
+  : StateT WriterState Id Unit
+  :=
+    justTag tagName []
+
+/--
+  Print a child enclosed in `<tagName> ⋯ </tagName>`.
+
+  If the `tagOptions` is `[]`, print as above.
+  If the `tagOptions` is non-empty, then print as follows:
+  ```html5
+  <tagName
+    option0 = "value0"
+    ⋯
+    optionN = "valueN"
+  >
+    child
+  </tagName>
+  ```
+-/
+private def inTag
+  (tagName : String)
+  (tagOptions : List (String × String))
+  (child : StateT WriterState Id Unit)
+  : StateT WriterState Id Unit
+  := do
+    justTag tagName tagOptions
+    indented child
+    appendHtml s!"</{tagName}>"
+
+/-- Print a child enclosed in `<tagName> ⋯ </tagName>`, where the tag takes no options. -/
+private def inTag'
+  (tagName : String)
+  (child : StateT WriterState Id Unit)
+  : StateT WriterState Id Unit
+  :=
+    inTag tagName [] child
+
+/--
+  Print a child-less tag in the form
+  ```html5
+  <tagName
+    option0=\"value0\"
+    ⋯
+    optionN=\"valueN\"
+  ></tagName>
+  ```
+-/
+private def childlessTag
+  (tagName : String)
+  (tagOptions : List (String × String))
+  : StateT WriterState Id Unit
+  := do
+    appendHtml s!"<{tagName}"
+    indented <| appendOptions tagOptions
+    appendHtml s!"></{tagName}>"
+
+/--
+  Write a comment, styled as follows:
+  ```html5
+  <!--
+    ⋯
+  -->
+  ```
+  The `content` goes in the `⋯`.
+-/
+private def comment
+  (lines : List String)
+  : StateT WriterState Id Unit
+  := do
+    appendHtml "<!--"
+    indented do
+      for line in lines do
+        appendHtml line
+    appendHtml "-->"
+
+
+
+/- SECTION: Combinators to write the page -/
+
+/-- Write the `<!DOCTYPE html>`. -/
+private def doctype : StateT WriterState Id Unit := do
+  appendHtml "<!DOCTYPE html>"
+
+/-- Write the `<html> ⋯ </html>`. The `child` goes in the `⋯`. -/
+private def html (child : StateT WriterState Id Unit) : StateT WriterState Id Unit := do
+  inTag "html" [.mk "lang" "en"] do
+    child
+
+/-- Write the `<head> ⋯ </head>`. The `pageName` is used in the `<title> ⋯ </title>`. -/
+private def head (pageName : String) : StateT WriterState Id Unit := do
+  inTag' "head" do
+    inTag' "title" do
+      appendHtml <| titleTemplate pageName
+    justTag "link"
+      [ .mk "rel" "icon"
+      , .mk "href" "../asset/logo/logo-128-round.png"
+      ]
+    justTag "meta"
+      [ .mk "name" "viewport"
+      , .mk "content" "width=device-width, initial-scale=1.0"
+      ]
+    justTag "link"
+      [ .mk "rel" "stylesheet"
+      , .mk "href" "../style.css"
+      ]
+    comment
+      [ "NOTE: The following elements allow for `KaTeX` to be used on this webpage."
+      , "SOURCE: https://katex.org/docs/browser"
+      ]
+    justTag "link"
+      [ .mk "rel" "stylesheet"
+      , .mk "href" "https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css"
+      , .mk "integrity" "sha384-5TcZemv2l/9On385z///+d7MSYlvIEw9FuZTIdZ14vJLqWphw7e7ZPuOiCHJcFCP"
+      , .mk "crossorigin" "anonymous"
+      ]
+    childlessTag "script"
+      [ .mk "src" "https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"
+      , .mk "integrity" "sha384-cMkvdD8LoxVzGF/RPUKAcvmm49FQ0oxwDF3BGKtDXcEc+T1b2N+teh/OJfpU0jr6"
+      , .mk "crossorigin" "anonymous"
+      ]
+    childlessTag "script"
+      [ .mk "src" "https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js"
+      , .mk "integrity" "sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh"
+      , .mk "crossorigin" "anonymous"
+      ]
+    comment
+      [ "NOTE: `../script/discussion.js` is included after `KaTeX` to make `KaTeX` available"
+      , "in `../script/discussion.js`."
+      ]
+    childlessTag "script"
+      [ .mk "src" "../script/discussion.js"
+      ]
+
+/-- Write the `<nav> ⋯ </nav>`. -/
+private def nav : StateT WriterState Id Unit := do
+  inTag' "nav" do
+    inTag "a" [.mk "href" "../index.html"] do
+      inTag "div" [.mk "class" "logo"] do
+        justTag "img"
+          [ .mk "src" "../asset/logo/logo-270.png"
+          , .mk "alt" "Logo"
+          ]
+    inTag "div" [.mk "class" "link-container"] do
+      inTag "a" [.mk "href" "../glossary.html", .mk "class" "nav-link"] do
+        appendHtml "Glossary"
+
+      inTag "a" [.mk "href" "../suggestions.html", .mk "class" "nav-link"] do
+        appendHtml "Suggestions"
+
+      inTag "a" [.mk "href" "../about.html", .mk "class" "nav-link"] do
+        appendHtml "About"
+
+/-- Write the `<footer> ⋯ </footer>`. -/
+private def footer : StateT WriterState Id Unit := do
+  inTag' "footer" do
+    inTag "a" [.mk "href" "../index.html"] do
+      inTag "div" [.mk "class" "logo"] do
+        justTag "img"
+          [ .mk "src" "../asset/logo/logo-270.png"
+          , .mk "alt" "Logo"
+          ]
+
+/--
+  Write the sidenotes bar.
+
+  The sidenotes themselves are embedded within the main `<article> ⋯ </article>` and a CSS
+  hack is used to position them within the space reserved by the `<div id="sidenotes-bar">`.
+  Consequently, this state transformer doesn't actually write much HTML.
+-/
+private def sidenotesBar : StateT WriterState Id Unit := do
+  inTag "div" [.mk "id" "sidenotes-bar"] do
+    inTag "div" [.mk "class" "bar-title"] do
+      inTag' "span" do
+        appendHtml "Sidenotes"
+      inTag "button" [.mk "id" "sidenotes-bar-hide"] do
+        appendHtml "hide"
+
+/-- Write the `bar-title` of the contents bar. -/
+private def contentsBar.title : StateT WriterState Id Unit := do
+  inTag "div" [.mk "class" "bar-title"] do
+    inTag' "span" do
+      appendHtml "Contents"
+    inTag "button" [.mk "id" "contents-bar-hide"] do
+      appendHtml "hide"
+
+/-- Write the `<ul>` of the contents bar. -/
+private def contentsBar.list (sections : List Section) : StateT WriterState Id Unit := do
+  inTag' "ul" do
+    for it in sections do
+      inTag' "li" do
+        inTag "a" [.mk "href" s!"#{it.id}"] do
+          appendHtml it.title
+    inTag' "li" do
+      inTag "a" [.mk "href" "#See-also"] do
+        appendHtml "See also"
+
+/-- Write the contents bar. The `sections` are used to generate the `<li>`s in the `<ul>`. -/
+private def contentsBar (sections : List Section) : StateT WriterState Id Unit := do
+  inTag "div" [.mk "id" "contents-bar"] do
+    inTag "div" [.mk "id" "contents-bar-outer-container"] do
+      inTag "div" [.mk "id" "contents-bar-inner-container"] do
+        contentsBar.title
+        contentsBar.list sections
+
+/-- Write a `TextElement`. -/
+private def textElement (element : TextElement) : StateT WriterState Id Unit := do
+  match element with
+  | .s string =>
+    appendHtml string
+  | .eqn equation =>
+    appendHtml s!"$${equation.toString}$$"
+  | .al alignContent => do
+    appendHtml "$$\\begin{align*}"
+    indented do
+      for line in alignContent.toList do
+        appendHtml line
+    appendHtml "\\end{align*}$$"
+  | .a href content => do
+    inTag "a" [.mk "href" href] do
+      appendHtml content
+
+/-- Write a `Sidenote`. -/
+-- TODO: Check that this outputs in a non-shit way
+private def sidenote (sidenote : Sidenote) : StateT WriterState Id Unit := do
+  inTag "span" [.mk "class" "sidenote-container"] do
+    inTag' "sup" do
+      inTag "a" [.mk "class" "sidenote-anchor", .mk "href" s!"#{(←getSidenoteId)}"] do
+        appendHtml s!"[{(←get).sidenoteNumber}]"
+    inTag "span" [.mk "class" "sidenote", .mk "id" (←getSidenoteId)] do
+      appendHtml s!"[{(←get).sidenoteNumber}]" -- TODO: Check that this is actually what we wanna do
+      for element in sidenote.toList do
+        textElement element
+  incrementSidenoteNumber
+
+/-- Write out a `<p> ⋯ </p>`. The `t` is to be written as the `⋯`. -/
+private def p (t : Text) : StateT WriterState Id Unit := do
+  inTag' "p" do
+    for content in t.toList do
+      match content with
+      | .e e => textElement e
+      | .sn s => sidenote s
+
+/-- Write a (static) commutative diagram. -/
+private def cda (d : Diagram) : StateT WriterState Id Unit := do
+  inTag "div" [.mk "class" "block-static-diagram-container"] do
+    childlessTag "iframe" <|
+      let options : List (String × String) :=
+        [ .mk "class" "quiver-embed block-static-diagram"
+        , .mk "src" s!"{d.href}&embed"
+        ]
+      ; match d.height with
+        | none    => options
+        | some h  => .mk "height" s!"{h}" :: options
+
+/-- Write an interactive commutative diagram. -/
+-- TODO: FIXME: Implement!
+private def ida (d : InteractiveDiagram) : StateT WriterState Id Unit := do
+  set { (←get) with okAsDiscussion := false } -- No `InteractiveDiagram`s on Discussion-family pages
+  appendHtml "DEBUG: FIXME: Writing out interactive diagrams isn't supported yet!"
+
+/-- Write the `Body` of some container. -/
+private def elementBody (b : Body) : StateT WriterState Id Unit := do
+  for e in b.toList do
+    match e with
+    | .p t => p t
+    | .cda d => cda d
+    | .ida d => ida d
+
+/-- Write an `OutLink`. -/
+private def outLink (l : OutLink) : StateT WriterState Id Unit := do
+  inTag "svg" [.mk "class" "outlink", .mk "viewBox" "0 0 102 22"] do
+    inTag "a" [.mk "href" l.href] do
+      childlessTag "path"
+        [ .mk "class" "outlink-arrow"
+        , .mk "d" "M 1 1 L 91 1 L 101 11 L 91 21 L 1 21 L 11 11 Z"
+        ]
+      inTag "text" [.mk "class" "outlink-text", .mk "x" "51", .mk "y" "11"] do
+        appendHtml l.label
+
+/-- Write a `Block`, including its internal content. -/
+private def elementBlock (b : Block) : StateT WriterState Id Unit := do
+  inTag "div" [.mk "class" "block-section-element"] do
+    inTag' "h3" do
+      match b.title with
+      | none    => appendHtml s!"{b.kind.toString}."
+      | some t  => appendHtml s!"{b.kind.toString}. ({t})"
+    elementBody b.body
+  if let some l := b.outLink? then do
+    outLink l
+
+/-- Write an element inside a `<section>`. -/
+private def element (e : Element) : StateT WriterState Id Unit := do
+  match e with
+    | .body b => elementBody b
+    | .block b => elementBlock b
+
+/-- Write a `<section>`. -/
+private def writeSection (it : Section) : StateT WriterState Id Unit := do
+  inTag "section" [.mk "id" it.id] do
+    inTag' "h2" do
+      appendHtml it.title
+    for e in it.elements do
+      element e
+
+/-- Write the "see also" section. -/
+private def seeAlso (s : SeeAlso) : StateT WriterState Id Unit := do
+  inTag "section" [.mk "id" "See-also"] do
+    inTag' "h2" do
+      appendHtml "See also"
+    inTag' "p" do
+      if let some (href, title) := s.readNext then do
+        inTag' "strong" do
+          appendHtml "Read next:"
+        inTag "a" [.mk "href" href] do
+          appendHtml title
+      if ! s.links.isEmpty then do
+        inTag "h3" [.mk "class" "see-also"] do
+          appendHtml "See also:"
+        inTag "ul" [.mk "class" "see-also"] do
+          for (href, title) in s.links do
+            inTag' "li" do
+              inTag "a" [.mk "href" href] do
+                appendHtml title
+
+/-- Write the main `<article>`. -/
+private def article (page : Page) : StateT WriterState Id Unit := do
+  inTag "article" [.mk "id" "content"] do
+    inTag' "h1" do
+      appendHtml page.title
+    for it in page.sections do
+      writeSection it
+    seeAlso page.seeAlso
+
+/-- Write the `<main> ⋯ </main>`. -/
+private def main (page : Page) : StateT WriterState Id Unit := do
+  inTag "main" [.mk "class" "family"] do
+    contentsBar page.sections
+    article page
+    sidenotesBar
+
+/--
+  Write the `<body> ⋯ </body>`.
+  The `sections` are rendered within the main content and are used to produce the contents
+  bar.
+-/
+private def body (page : Page) : StateT WriterState Id Unit := do
+  inTag' "body" do
+    nav
+    main page
+    footer
+
+/-- Write the `page` into an `HTML` document, captured in the `WriterState.currentHtml`. -/
+private def Page.write (page : Page) : StateT WriterState Id Unit := do
+  doctype
+  html do
+    head page.title
+    body page
+
+/-- Convert the `page` to a string encoding an `HTML` document. -/
+private def Page.toHtml (page : Page) : String :=
+  page.write |>.run {} |>.snd  |>.currentHtml
+
+
+
+/- LAUNCH: writeHtml -/
+
+/-- Write the `HTML` document corresponding to the given `page` out to the given `filename`. -/
+private def writeHtml (filename : System.FilePath) (page : Page) : IO Unit := do
+  IO.FS.writeFile filename page.toHtml
+
+/-- Write the `HTML` document corresponding to the given `page` out to the given `filename`. -/
+def Page.writeHtmlToFile (page : Page) (filename : System.FilePath) : IO Unit :=
+  writeHtml filename page

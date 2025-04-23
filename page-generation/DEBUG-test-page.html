@@ -1,0 +1,337 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>
+      Adjunctions - Empty Limit
+    </title>
+    <link
+      rel="icon"
+      href="../asset/logo/logo-128-round.png"
+    >
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    >
+    <link
+      rel="stylesheet"
+      href="../style.css"
+    >
+    <!--
+      NOTE: The following elements allow for `KaTeX` to be used on this webpage.
+      SOURCE: https://katex.org/docs/browser
+    -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css"
+      integrity="sha384-5TcZemv2l/9On385z///+d7MSYlvIEw9FuZTIdZ14vJLqWphw7e7ZPuOiCHJcFCP"
+      crossorigin="anonymous"
+    >
+    <script
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"
+      integrity="sha384-cMkvdD8LoxVzGF/RPUKAcvmm49FQ0oxwDF3BGKtDXcEc+T1b2N+teh/OJfpU0jr6"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js"
+      integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh"
+      crossorigin="anonymous"
+    ></script>
+    <!--
+      NOTE: `../script/discussion.js` is included after `KaTeX` to make `KaTeX` available
+      in `../script/discussion.js`.
+    -->
+    <script
+      src="../script/discussion.js"
+    ></script>
+  </head>
+  <body>
+    <nav>
+      <a href="../index.html">
+        <div class="logo">
+          <img
+            src="../asset/logo/logo-270.png"
+            alt="Logo"
+          >
+        </div>
+      </a>
+      <div class="link-container">
+        <a
+          href="../glossary.html"
+          class="nav-link"
+        >
+          Glossary
+        </a>
+        <a
+          href="../suggestions.html"
+          class="nav-link"
+        >
+          Suggestions
+        </a>
+        <a
+          href="../about.html"
+          class="nav-link"
+        >
+          About
+        </a>
+      </div>
+    </nav>
+    <main class="family">
+      <div id="contents-bar">
+        <div id="contents-bar-outer-container">
+          <div id="contents-bar-inner-container">
+            <div class="bar-title">
+              <span>
+                Contents
+              </span>
+              <button id="contents-bar-hide">
+                hide
+              </button>
+            </div>
+            <ul>
+              <li>
+                <a href="#Hom-set-definition">
+                  Hom-set definition
+                </a>
+              </li>
+              <li>
+                <a href="#Unit-counit-definition">
+                  Unit-counit definition
+                </a>
+              </li>
+              <li>
+                <a href="#Equivalence-of-Definitions">
+                  Equivalence of Definitions
+                </a>
+              </li>
+              <li>
+                <a href="#Result:-RAPL">
+                  Result: RAPL
+                </a>
+              </li>
+              <li>
+                <a href="#See-also">
+                  See also
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <article id="content">
+        <h1>
+          Adjunctions
+        </h1>
+        <section id="Hom-set-definition">
+          <h2>
+            Hom-set definition
+          </h2>
+          <p>
+            The hom-set definition of an adjunction is how adjunctions are most typically introduced. Let $\mathsf{C}$ and $\mathsf{\widetilde{C}}$ be categories. A hom-set adjunction consists of a pair of opposing functors
+            $$F : \mathsf{C} \rightleftarrows \mathsf{\widetilde{C}} : U$$
+            and a family of isomorphisms
+            <span class="sidenote-container">
+              <sup>
+                <a
+                  class="sidenote-anchor"
+                  href="#sidenote-1"
+                >
+                  [1]
+                </a>
+              </sup>
+              <span
+                class="sidenote"
+                id="sidenote-1"
+              >
+                [1]
+                This family is often suppressed in practice.
+              </span>
+            </span>
+            $$\varphi_{x, \tilde{y}} : \widetilde{\mathsf{C}}(F x, \tilde{y}) \simeq \mathsf{C}(x, U \tilde{y})$$
+            natural in $x \in \mathsf{C}^{\mathrm{op}}$ and in $\tilde{y} \in \widetilde{\mathsf{C}}$.
+          </p>
+        </section>
+        <section id="Unit-counit-definition">
+          <h2>
+            Unit-counit definition
+          </h2>
+          <p>
+            The unit-counit definition is useful in 2-category theory, and for practically working with adjunctions.
+            Let $\mathsf{C}$ and $\widetilde{\mathsf{C}}$ be categories. A unit-counit adjunction consists of a pair of opposing functors
+            $$F : \mathsf{C} \rightleftarrows \mathsf{\widetilde{C}} : U$$
+            and two natural transformations
+            <span class="sidenote-container">
+              <sup>
+                <a
+                  class="sidenote-anchor"
+                  href="#sidenote-2"
+                >
+                  [2]
+                </a>
+              </sup>
+              <span
+                class="sidenote"
+                id="sidenote-2"
+              >
+                [2]
+                These are known as the unit and the counit respectively.
+              </span>
+            </span>
+            $$\begin{align*}
+              \eta
+              : 1_{\mathsf{C}}
+              &\to U F
+              &\varepsilon
+              : F U
+              &\to 1_{\widetilde{\mathsf{C}}}
+            \end{align*}$$
+            such that the triangle identities shown below commute:
+          </p>
+          <div class="block-static-diagram-container">
+            <iframe
+              height="302"
+              class="quiver-embed block-static-diagram"
+              src="https://q.uiver.app/#q=WzAsNixbMiwwLCJGVUYiXSxbMiwyLCJGIl0sWzAsMCwiRiJdLFs0LDAsIlUiXSxbNiwwLCJVRlUiXSxbNiwyLCJVIl0sWzIsMCwiRiBcXGV0YSJdLFswLDEsIlxcdmFyZXBzaWxvbiBGIl0sWzIsMSwiMV9GIiwyXSxbMyw0LCJcXGV0YSBVIl0sWzQsNSwiVVxcdmFyZXBzaWxvbiJdLFszLDUsIjFfVSIsMl1d&macro_url=https%3A%2F%2Fgist.githubusercontent.com%2Favg-lebesgue-enjoyer%2Ffacad9c53abe5718a59f4400e28c87f3%2Fraw%2Fbf740cfaac1cf36f7c5faed44562c7fe9fd9f8f3%2Fquiver-preamble.tex&embed"
+            ></iframe>
+          </div>
+        </section>
+        <section id="Equivalence-of-Definitions">
+          <h2>
+            Equivalence of Definitions
+          </h2>
+          <p>
+            The two definitions provided above are equivalent in the following sense.
+          </p>
+          <div class="block-section-element">
+            <h3>
+              Lemma.
+            </h3>
+            <p>
+              Fix a pair of opposing functors $F : \mathsf{C} \rightleftarrows \mathsf{\widetilde{C}} : U$. Then, there is a family of isomorphisms
+              $$\varphi_{x, \tilde{y}} : \widetilde{\mathsf{C}}(F x, \tilde{y}) \simeq \mathsf{C}(x, U \tilde{y})$$
+              specifying a hom-set adjunction if and only if there is a pair of natural transformations
+              $$\begin{align*}
+                \eta
+                : 1_{\mathsf{C}}
+                &\to U F
+                &\varepsilon
+                : F U
+                &\to 1_{\widetilde{\mathsf{C}}}
+              \end{align*}$$
+              specifying a unit-counit adjunction.
+            </p>
+          </div>
+          <svg
+            class="outlink"
+            viewBox="0 0 102 22"
+          >
+            <a href="../proof/adjunction-definition-equivalence.html">
+              <path
+                class="outlink-arrow"
+                d="M 1 1 L 91 1 L 101 11 L 91 21 L 1 21 L 11 11 Z"
+              ></path>
+              <text
+                class="outlink-text"
+                x="51"
+                y="11"
+              >
+                see proof
+              </text>
+            </a>
+          </svg>
+        </section>
+        <section id="Result:-RAPL">
+          <h2>
+            Result: RAPL
+          </h2>
+          <p>
+            Perhaps the most frequently used result in category theory is the following.
+          </p>
+          <div class="block-section-element">
+            <h3>
+              Theorem. (RAPL)
+            </h3>
+            <p>
+              Let $U : \mathsf{\widetilde{C}} \to \mathsf{C}$ be a right adjoint functor and let $\widetilde{D} : \mathsf{J} \to \mathsf{\widetilde{C}}$ be a diagram with a limit in $\mathsf{\widetilde{C}}$. Then, the composite diagram $U \widetilde{D} : \mathsf{J} \to \mathsf{C}$ has a limit in $\mathsf{C}$ and
+              $$\lim_{\mathsf{J}} \left( U \widetilde{D} \right) \simeq U \left( \lim_{\mathsf{J}} \widetilde{D} \right)$$
+              Consequently, if $\mathsf{C}$ and $\mathsf{\widetilde{C}}$ have all $\mathsf{J}$-shaped limits, then the following diagram commutes up to isomorphism.
+            </p>
+            <div class="block-static-diagram-container">
+              <iframe
+                height="302"
+                class="quiver-embed block-static-diagram"
+                src="https://q.uiver.app/#q=WzAsNSxbMCwwLCJcXGNhdHtDfV57XFxjYXR7Sn19Il0sWzAsMiwiXFxjYXR7Q30iXSxbMiwwLCJcXGNhdHtcXHd0bHtDfX1ee1xcY2F0e0p9fSJdLFsyLDIsIlxcY2F0e1xcd3Rse0N9fSAiXSxbMSwxLCJcXGNpcmNsZWFycm93bGVmdF97XFxzaW1lcX0iXSxbMCwxLCJcXGxpbV97XFxjYXR7Sn19IiwyXSxbMiwzLCJcXGxpbV97XFxjYXR7Sn19Il0sWzEsMywiVSIsMl0sWzAsMiwiVSBcXGNpcmMgLSJdXQ==&macro_url=https%3A%2F%2Fgist.githubusercontent.com%2Favg-lebesgue-enjoyer%2Ffacad9c53abe5718a59f4400e28c87f3%2Fraw%2Fbf740cfaac1cf36f7c5faed44562c7fe9fd9f8f3%2Fquiver-preamble.tex&embed"
+              ></iframe>
+            </div>
+          </div>
+          <svg
+            class="outlink"
+            viewBox="0 0 102 22"
+          >
+            <a href="../proof/rapl.html">
+              <path
+                class="outlink-arrow"
+                d="M 1 1 L 91 1 L 101 11 L 91 21 L 1 21 L 11 11 Z"
+              ></path>
+              <text
+                class="outlink-text"
+                x="51"
+                y="11"
+              >
+                see proof
+              </text>
+            </a>
+          </svg>
+        </section>
+        <section id="See-also">
+          <h2>
+            See also
+          </h2>
+          <p>
+            <strong>
+              Read next:
+            </strong>
+            <a href="./multivariate-adjunctions.html">
+              Multivariate Adjunctions
+            </a>
+            <h3 class="see-also">
+              See also:
+            </h3>
+            <ul class="see-also">
+              <li>
+                <a href="../proof/equivalence-of-adjunction-definitions.html">
+                  Equivalence of Adjunction Definitions
+                </a>
+              </li>
+              <li>
+                <a href="../proof/right-adjoints-preserve-limits.html">
+                  Right Adjoints Preserve Limits
+                </a>
+              </li>
+            </ul>
+          </p>
+        </section>
+      </article>
+      <div id="sidenotes-bar">
+        <div class="bar-title">
+          <span>
+            Sidenotes
+          </span>
+          <button id="sidenotes-bar-hide">
+            hide
+          </button>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <a href="../index.html">
+        <div class="logo">
+          <img
+            src="../asset/logo/logo-270.png"
+            alt="Logo"
+          >
+        </div>
+      </a>
+    </footer>
+  </body>
+</html>

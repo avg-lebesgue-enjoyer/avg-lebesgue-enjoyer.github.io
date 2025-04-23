@@ -5,4 +5,5 @@
 
 /- IMPORTS: -/
 
-def hello : String := "World"
+import Inset.EncodePages
+import Inset.BuildPages

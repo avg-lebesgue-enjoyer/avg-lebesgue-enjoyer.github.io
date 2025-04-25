@@ -1,7 +1,4 @@
-/-
-  **FILE:** `Inset/ExamplePage.lean`
-  **PURPOSE:** Demonstrate an example page
--/
+/- **FILE:** `Pages/Adjunctions.lean` -/
 
 /- IMPORTS: -/
 
@@ -14,11 +11,14 @@ import Inset.EncodePages
 -- NOTE: `q.uiver` URLs
 private def triangleIdentitiesHref : String := "https://q.uiver.app/#q=WzAsNixbMiwwLCJGVUYiXSxbMiwyLCJGIl0sWzAsMCwiRiJdLFs0LDAsIlUiXSxbNiwwLCJVRlUiXSxbNiwyLCJVIl0sWzIsMCwiRiBcXGV0YSJdLFswLDEsIlxcdmFyZXBzaWxvbiBGIl0sWzIsMSwiMV9GIiwyXSxbMyw0LCJcXGV0YSBVIl0sWzQsNSwiVVxcdmFyZXBzaWxvbiJdLFszLDUsIjFfVSIsMl1d&macro_url=https%3A%2F%2Fgist.githubusercontent.com%2Favg-lebesgue-enjoyer%2Ffacad9c53abe5718a59f4400e28c87f3%2Fraw%2Fbf740cfaac1cf36f7c5faed44562c7fe9fd9f8f3%2Fquiver-preamble.tex"
 private def raplHref : String := "https://q.uiver.app/#q=WzAsNSxbMCwwLCJcXGNhdHtDfV57XFxjYXR7Sn19Il0sWzAsMiwiXFxjYXR7Q30iXSxbMiwwLCJcXGNhdHtcXHd0bHtDfX1ee1xcY2F0e0p9fSJdLFsyLDIsIlxcY2F0e1xcd3Rse0N9fSAiXSxbMSwxLCJcXGNpcmNsZWFycm93bGVmdF97XFxzaW1lcX0iXSxbMCwxLCJcXGxpbV97XFxjYXR7Sn19IiwyXSxbMiwzLCJcXGxpbV97XFxjYXR7Sn19Il0sWzEsMywiVSIsMl0sWzAsMiwiVSBcXGNpcmMgLSJdXQ==&macro_url=https%3A%2F%2Fgist.githubusercontent.com%2Favg-lebesgue-enjoyer%2Ffacad9c53abe5718a59f4400e28c87f3%2Fraw%2Fbf740cfaac1cf36f7c5faed44562c7fe9fd9f8f3%2Fquiver-preamble.tex"
--- NOTE: `\begin{align*} ⋯ \end{align*}` contents
+-- NOTE: `$$ ⋯ $$` contents
 private def opposingFunctorsEqn : String :=
   "F : \\mathsf{C} \\rightleftarrows \\mathsf{\\widetilde{C}} : U"
 private def homSetIsomorphismEqn : String :=
   "\\varphi_{x, \\tilde{y}} : \\widetilde{\\mathsf{C}}(F x, \\tilde{y}) \\simeq \\mathsf{C}(x, U \\tilde{y})"
+private def raplEqn : String :=
+  "\\lim_{\\mathsf{J}} \\left( U \\widetilde{D} \\right) \\simeq U \\left( \\lim_{\\mathsf{J}} \\widetilde{D} \\right)"
+  -- NOTE: `$$\begin{align*} ⋯ \end{align*}$$` contents
 private def unitCounitAlign : BigEquation :=
   [ "\\eta"
   , ": 1_{\\mathsf{C}}"
@@ -27,12 +27,10 @@ private def unitCounitAlign : BigEquation :=
   , ": F U"
   , "&\\to 1_{\\widetilde{\\mathsf{C}}}"
   ]
-private def raplEqn : String :=
-  "\\lim_{\\mathsf{J}} \\left( U \\widetilde{D} \\right) \\simeq U \\left( \\lim_{\\mathsf{J}} \\widetilde{D} \\right)"
 
 
 
-/- LAUNCH: `adjunctionPage` -/
+/- LAUNCH: -/
 
 namespace Adjunctions
   def it : Page :=
@@ -112,12 +110,12 @@ namespace Adjunctions
           ]
       ]
     , seeAlso :=
-      { readNext :=
-          some ("./multivariate-adjunctions.html", "Multivariate Adjunctions")
-      , links :=
-          [ .mk "../proof/equivalence-of-adjunction-definitions.html" "Equivalence of Adjunction Definitions"
-          , .mk "../proof/right-adjoints-preserve-limits.html" "Right Adjoints Preserve Limits"
-          ]
-      }
+        { readNext :=
+            some ("./multivariate-adjunctions.html", "Multivariate Adjunctions")
+        , links :=
+            [ .mk "../proof/equivalence-of-adjunction-definitions.html" "Equivalence of Adjunction Definitions"
+            , .mk "../proof/right-adjoints-preserve-limits.html" "Right Adjoints Preserve Limits"
+            ]
+        }
     }
 end Adjunctions

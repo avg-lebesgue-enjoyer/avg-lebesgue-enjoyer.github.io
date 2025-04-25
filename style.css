@@ -607,7 +607,9 @@ main.family #contents-bar-inner-container {
 }
 main.family #contents-bar-outer-container {
   /* Ensure the contents bar does not overlap the main content */
-  max-width: calc(var(--bar-width) - 2 * var(--gap));
+  --width: calc(var(--bar-width) - 2 * var(--gap));
+  max-width: var(--width);
+  width: var(--width);
   /* Fix self to window */
   position: fixed;
   /* Align inner content */
@@ -652,7 +654,6 @@ main.family #content .sidenote-container:has(.sidenote-anchor:hover) .sidenote {
 /* SECTION: Discussion- and Proof-family pages: Main content */
 
 main.family #content {
-  /* --section-margins: */
   display: flex;
   flex-direction: column;
   gap: 3em;
@@ -684,7 +685,7 @@ main.family #content section {
 
 main.family #content section p {
   width: 100%;
-  text-align: left;
+  text-align: justify;
 }
 
 
@@ -710,6 +711,11 @@ main.family .block-section-element {
 main.family .block-section-element > * {
   width: 100%; /* Make all elements of a `.block-section-element` flush left */
 }
+
+main.family #content .block-section-element ul {
+  width: calc(100% - 2 * var(--side-padding) - 0.5em); /* Fix the widths of lists inside `.block-section-element`s */
+}
+
 
 main.family .block-section-element h3 {
   font-size: medium;

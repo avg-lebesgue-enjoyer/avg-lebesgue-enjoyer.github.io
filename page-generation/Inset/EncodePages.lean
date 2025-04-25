@@ -124,6 +124,8 @@ def TextContent.a (href : URL) (content : String) : TextContent :=
 def Text : Type := List TextContent
 /-- Extract the underlying `List TextContent` from a `Text`. -/
 def Text.toList : Text → List TextContent := id
+/-- Shorthand for a `Text` consisting of a single string of text. -/
+def Text.s : String → Text := ([·]) ∘ TextContent.s
 
 
 
@@ -169,6 +171,8 @@ def InteractiveDiagram : Type := List IDFrame
 inductive BodyElement : Type where
   /-- A paragraph of `Text`. -/
   | p : Text → BodyElement
+  /-- A `<ul>` of `Text`. -/
+  | ul : List Text → BodyElement
   /-- A (static) commutative `Diagram`. -/
   | cda : Diagram → BodyElement
   /-- An interactive commutative diagram. -/

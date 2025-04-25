@@ -367,13 +367,24 @@ private def sidenote (sidenote : Sidenote) : StateT WriterState Id Unit := do
         textElement element
   incrementSidenoteNumber
 
+/-- Write out some `Text`. -/
+private def text (t : Text) : StateT WriterState Id Unit := do
+  for content in t.toList do
+    match content with
+    | .e e => textElement e
+    | .sn s => sidenote s
+
 /-- Write out a `<p> ⋯ </p>`. The `t` is to be written as the `⋯`. -/
 private def p (t : Text) : StateT WriterState Id Unit := do
   inTag' "p" do
-    for content in t.toList do
-      match content with
-      | .e e => textElement e
-      | .sn s => sidenote s
+    text t
+
+/-- Write out a `<ul> ⋯ </ul>`. The `ts` are to be written as `<li>`s in the `⋯`. -/
+private def ul (ts : List Text) : StateT WriterState Id Unit := do
+  inTag' "ul" do
+    for t in ts do
+      inTag' "li" do
+        text t
 
 /-- Write a (static) commutative diagram. -/
 private def cda (d : Diagram) : StateT WriterState Id Unit := do
@@ -398,6 +409,7 @@ private def elementBody (b : Body) : StateT WriterState Id Unit := do
   for e in b.toList do
     match e with
     | .p t => p t
+    | .ul ts => ul ts
     | .cda d => cda d
     | .ida d => ida d
 

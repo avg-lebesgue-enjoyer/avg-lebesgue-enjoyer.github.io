@@ -9,6 +9,7 @@
 /- IMPORTS: -/
 
 import Pages.Adjunctions
+import Pages.Categories
 
 
 
@@ -21,4 +22,5 @@ import Pages.Adjunctions
 -/
 def pagesToRender : List (Page × System.FilePath) :=
   [ .mk Adjunctions.it "discussion/adjunctions.html"
+  , .mk Categories.it "discussion/categories.html"
   ]

@@ -73,9 +73,23 @@ private def getSidenoteId : StateT WriterState Id String := do
 private def incrementSidenoteNumber : StateT WriterState Id Unit := do
   set { (←get) with sidenoteNumber := (←get).sidenoteNumber + 1 }
 
-/-- Append the given `html` to the `.currentHtml`. -/
+/-- Append the given `html` to the `.currentHtml`, **without beginning a new line or adding indentation**. -/
+private def appendHtml' (html : HtmlOutput) : StateT WriterState Id Unit := do
+  set { (←get) with currentHtml := (←get).currentHtml ++ html }
+
+/-- Append a newline to the `.currentHtml`. -/
+private def newLine : StateT WriterState Id Unit := do
+  appendHtml' "\n"
+
+/-- Write the appropriate number of spaces to indent a new line of text. -/
+private def writeIndentation : StateT WriterState Id Unit := do
+  appendHtml' <| (←get).indentSpaces
+
+/-- Append the given `html` to the `.currentHtml`, **after beginning a new indented line**. -/
 private def appendHtml (html : HtmlOutput) : StateT WriterState Id Unit := do
-  set { (←get) with currentHtml := (←get).currentHtml ++ s!"\n{(←get).indentSpaces}" ++ html }
+  newLine
+  writeIndentation
+  appendHtml' html
 
 /-- Increment the indentation level. -/
 private def indent : StateT WriterState Id Unit := do
@@ -188,6 +202,28 @@ private def childlessTag
     appendHtml s!"<{tagName}"
     indented <| appendOptions tagOptions
     appendHtml s!"></{tagName}>"
+
+/-- Print a child enclosed in `<tagName> ⋯ </tagName>`, with no newline before, after or within the tag. -/
+private def inlineTag
+  (tagName : String)
+  (tagOptions : List (String × String))
+  (child : StateT WriterState Id Unit)
+  : StateT WriterState Id Unit
+  := do
+    if let [] := tagOptions then do
+      appendHtml' s!"<{tagName}>"
+    else do
+      let options := tagOptions |>.map (fun (option, value) => s!" {option}={value}") |>.foldr (· ++ ·) ""
+      appendHtml' s!"<{tagName}{options}>"
+    child
+    appendHtml' s!"</{tagName}>"
+
+/-- Print a child enclosed in `<tagName> ⋯ </tagName>`, with no newline before, after or within the tag, where the tag takes no options. -/
+private def inlineTag'
+  (tagName : String)
+  (child : StateT WriterState Id Unit)
+  : StateT WriterState Id Unit
+  := inlineTag tagName [] child
 
 /--
   Write a comment, styled as follows:
@@ -341,34 +377,56 @@ private def contentsBar (sections : List Section) : StateT WriterState Id Unit :
 private def textElement (element : TextElement) : StateT WriterState Id Unit := do
   match element with
   | .s string =>
-    appendHtml string
-  | .eqn equation =>
-    appendHtml s!"$${equation.toString}$$"
+    appendHtml' string
+  | .eqn equation => do
+    appendHtml' "$$"
+    indented do
+      appendHtml equation.toString
+    newLine
+    writeIndentation
+    appendHtml' "$$"
   | .al alignContent => do
     appendHtml "$$\\begin{align*}"
     indented do
       for line in alignContent.toList do
         appendHtml line
     appendHtml "\\end{align*}$$"
+    newLine
+    writeIndentation
   | .a href content => do
-    inTag "a" [.mk "href" href] do
-      appendHtml content
+    inlineTag "a" [.mk "href" href] do
+      appendHtml' content
 
-/-- Write a `Sidenote`. -/
--- TODO: Check that this outputs in a non-shit way
+/--
+  Write a `Sidenote`. This renders somewhat ugly in the output HTML to get around the fact that
+  ```HTML
+  some text
+  <span>
+    <sup>
+      a
+    </sup>
+  </span>
+   more text
+  ```
+  renders as `some text ᵃ more text` instead of the desired `some textᵃ more text`.
+-/
 private def sidenote (sidenote : Sidenote) : StateT WriterState Id Unit := do
-  inTag "span" [.mk "class" "sidenote-container"] do
-    inTag' "sup" do
-      inTag "a" [.mk "class" "sidenote-anchor", .mk "href" s!"#{(←getSidenoteId)}"] do
-        appendHtml s!"[{(←get).sidenoteNumber}]"
-    inTag "span" [.mk "class" "sidenote", .mk "id" (←getSidenoteId)] do
-      appendHtml s!"[{(←get).sidenoteNumber}]" -- TODO: Check that this is actually what we wanna do
+  inlineTag "span" [.mk "class" "sidenote-container"] do
+    inlineTag' "sup" do
+      inlineTag "a" [.mk "class" "sidenote-anchor", .mk "href" s!"#{(←getSidenoteId)}"] do
+        appendHtml' s!"[{(←get).sidenoteNumber}]"
+    inlineTag "span" [.mk "class" "sidenote", .mk "id" (←getSidenoteId)] do
+      appendHtml s!"[{(←get).sidenoteNumber}]"
+      newLine
+      writeIndentation
       for element in sidenote.toList do
         textElement element
   incrementSidenoteNumber
 
 /-- Write out some `Text`. -/
 private def text (t : Text) : StateT WriterState Id Unit := do
+  newLine
+  writeIndentation
   for content in t.toList do
     match content with
     | .e e => textElement e

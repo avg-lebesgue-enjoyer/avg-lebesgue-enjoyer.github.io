@@ -122,7 +122,7 @@ namespace Categories
                 { kind :=
                     .exa
                 , title :=
-                    "Topological spaces"
+                    "$\\mathbf{Top}$"
                 , body :=
                     [ .p
                         [ .s "Another important category is $\\mathrm{Top}$, whose objects are topological spaces and whose arrows are the continuous functions between them. $\\mathrm{Top}$ behaves quite differently to the categories of algebraic structures. For example, the"
@@ -196,6 +196,27 @@ namespace Categories
                         , .sn [.a "../proof/kappa-small-with-kappa-small-limits-implies-preorder.html" "Proof"]
                         , .s "."
                         ]
+                    ]
+                }
+            , .block
+                { kind :=
+                    .exa
+                , title :=
+                    "$\\mathbf{Cat}$"
+                , body :=
+                    [ .p
+                        [ .s "Categories are now objects we care about. The central thesis of category theory states that understanding the objects we care about requires understanding the arrows the arrows between them. The arrows between categories are known as <em>functors</em> and they, together with the small categories, form the category $\\mathbf{Cat}$ of all small categories. See"
+                        , .a "./functors.html" "our discussion on functors"
+                        , .s "for more details."
+                        ]
+                    , .p
+                        [ .s "Functors, then being objects that we care about, should be understood by studying the arrows between them. The arrows between functors are known as"
+                        , .a "./natural-transformations.html" "natural transformations"
+                        , .s "and they upgrade $\\mathbf{Cat}$ from being merely a category to being a"
+                        , .a "./2-categories.html" "2-category"
+                        , .s "."
+                        ]
+                    , .ps "This sort of recursiveness is a common theme in category theory&hellip;"
                     ]
                 }
             ]

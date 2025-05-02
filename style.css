@@ -113,7 +113,7 @@ nav {
 }
 
 
-.logo {
+.logo { /* TODO: Make this not look terrible on mobile */
   height: 44px;
   max-width: 44px;
   margin-left: var(--item-margin);
@@ -725,7 +725,7 @@ main.family .block-section-element h3 {
   font-size: medium;
 }
 
-main.family .block-section-element .block-static-diagram-container {
+main.family .block-section-element .block-static-diagram-container { /* TODO: Make this not look terrible on mobile */
   display: flex;
   flex-direction: row;
   align-items: center;

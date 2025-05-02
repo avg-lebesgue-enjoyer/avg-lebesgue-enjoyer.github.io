@@ -255,7 +255,8 @@ main.index-page-main section {
 
 svg.reading-order {
   --arrow-stroke-width: 3;
-  width: 50%;
+  max-width: 100%;
+  height: 15em;
 }
 
 svg.reading-order rect {

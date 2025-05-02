@@ -499,7 +499,8 @@ document.addEventListener('DOMContentLoaded', () => {
    */
   function showErrorMessage() {
     document.getElementById("glossary-error-message").classList.remove("hidden");
-    document.getElementById("glossary-error-timestamp").innerText = `Timestamp: ${new Date().toString()}`
+    document.getElementById("glossary-error-timestamp").innerText = `Timestamp: ${new Date().toString()}`;
+    // FIXME: Show the default list of stuff; i.e. `handleSortBy(sortAlphabetical, new Event(""));`
   }
 
 

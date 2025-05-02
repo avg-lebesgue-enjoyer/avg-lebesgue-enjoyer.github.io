@@ -115,6 +115,7 @@ nav {
 
 .logo {
   height: 44px;
+  max-width: 44px;
   margin-left: var(--item-margin);
   transition: 0.25s;
   display: flex;
@@ -123,10 +124,11 @@ nav {
 }
 
 .logo > img {
-  width: 90%;
-  height: 90%;
-  max-height: 100%;
-  max-width: 100%;
+  display: block;
+  width: auto;
+  height: auto;
+  max-height: 90%;
+  max-width: 90%;
   overflow: hidden;
   transition: 0.25s;
   border: var(--border-thickness) solid var(--border-colour);

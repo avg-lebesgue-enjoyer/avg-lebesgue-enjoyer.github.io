@@ -36,3 +36,4 @@ Take `q.uiver`'s suggested `height`s and scale them by `0.7` on the `<iframe>` y
     ^^ like wikipedia hovering over internal links
   [ ] Redesign where necessary for mobile.
     ^^ a decent chunk is necessary...
+    [ ] E.g. text should *left*-justify, rather than *justify*. (apple.com does this, for example)

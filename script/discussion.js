@@ -96,16 +96,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /**
-   * Update the topmost interactive diagram currently on screen.
-   * Do nothing if there are no such diagrams on screen.
-   */
-  const reloadTopmostInteractiveDiagram = () => {
-    withTopmostInteractiveDiagram((diagram) => {
-      console.debug("<!> FIXME: TODO: Reload the diagram");
-    });
-  }
-
-  /**
    * Get the `.frame-number` field of this diagram.
    * Return `null` on failure to find it.
    * @param {Element} diagram 
@@ -144,14 +134,58 @@ document.addEventListener("DOMContentLoaded", () => {
   const withFrameNumberField = (action) => {
     let diagrams = getOnScreenInteractiveDiagrams();
     if (diagrams.length === 0) {
+      console.debug("<!> NO DIAGRAMS")
       return;
     }
     const [diagram, ..._] = diagrams;
     const input = getFrameNumberField(diagram);
     if (input === null) {
+      console.debug("<!> NO INPUT")
       return; // Squash
     }
     action(input);
+  }
+
+  /**
+   * Update the topmost interactive diagram currently on screen, changing it
+   * to the frame number specified by its 
+   * Do nothing if there are no such diagrams on screen.
+   */
+  const reloadTopmostInteractiveDiagram = () => {
+    console.debug("<!> Reloading...");
+    withTopmostInteractiveDiagram((diagram) => {
+      // Get the `.frame-number` field, and adjust its `.value` to fall
+      // between its `.min` and `.max`.
+      const input = getFrameNumberField(diagram);
+      input.value = input.value.replace(/\D/g,""); // Strip non-numeric characters; SRC: https://stackoverflow.com/a/1862219
+      if (input === null || isNaN(Number(input.value))) {
+        console.debug(`<!> Input "${input.value}" failed to pass`);
+        return; // Squash
+      }
+      if (Number(input.value) <= 0) {
+        input.value = "1";
+      } else if (Number(input.max) < Number(input.value)) {
+        input.value = input.max;
+      }
+      const newFrameNumber = Number(input.value);
+      // Get `<iframe>`s and `<span>`s to modify
+      const iframes = Array.from(Array.from(Array.from(diagram.children)[0].children)[0].children);
+      const spans = Array.from(Array.from(Array.from(diagram.children)[0].children)[1].children);
+      if (iframes.length !== spans.length || newFrameNumber <= 0 || iframes.length < newFrameNumber) {
+        // There are more `<iframe>`s than `<span>`s (or vice versa),
+        // or the `newFrameNumber` is out of bounds. Give up.
+        return;
+      }
+      // Reload the diagram
+      iframes.forEach((iframe) => {
+        iframe.classList.add("fake-hidden");
+      });
+      spans.forEach((span) => {
+        span.classList.add("fake-hidden");
+      });
+      iframes[newFrameNumber - 1].classList.remove("fake-hidden");
+      spans[newFrameNumber - 1].classList.remove("fake-hidden");
+    });
   }
 
   /**
@@ -159,13 +193,15 @@ document.addEventListener("DOMContentLoaded", () => {
    * If there are no such diagrams on screen, then do nothing.
    */
   const focusFrameNumber = () => {
+    console.debug("<!> focusing frame");
     withFrameNumberField((input) => {
+      console.debug("<!> Input:");
+      console.debug(input);
       if (input !== document.activeElement) {
         input.value = "";
         input.focus();
       }
     });
-    reloadTopmostInteractiveDiagram();
   }
 
   /** Unfocus any `.frame-number` which currently has focus. */
@@ -173,11 +209,74 @@ document.addEventListener("DOMContentLoaded", () => {
     if (document.activeElement.classList.contains("frame-number")) {
       document.activeElement.blur();
     }
+    reloadTopmostInteractiveDiagram();
   }
+
+  // FIXME: Document!
+  const adjustFrameNumber = (offset) => {
+    withFrameNumberField((input) => {
+      if (input === null || isNaN(Number(input.value))) {
+        console.debug(`<!> Input "${input.value}" failed to pass`);
+        return; // Squash
+      }
+      input.value = String(Number(input.value) + offset);
+    });
+  }
+
+  // FIXME: Document!
+  const decrementFrameNumber = () => {
+    adjustFrameNumber(-1);
+  }
+
+  // FIXME: Document!
+  const incrementFrameNumber = () => {
+    adjustFrameNumber(+1);
+  }
+
+  // FIXME: Do this stuff for the ACTUAL BUTTONS' `.onClick` too
 
 
 
   /* SECTION: Event handlers */
+
+  /**
+   * Object tracking the state of which modifier keys are currently being pressed.
+   * Each field is stored as a `boolean`: `true` for "currently held down".
+   * This is used to disable the `"c"` keyboard shortcut while the user tries to
+   * `"CMD+C"` or `"CTRL+C"` (copy) their text on the webpage, for example.
+   */
+  let modifierKeyState = {
+    // Inspired by SRC: https://stackoverflow.com/a/45124140
+    Control: false,
+    Alt: false,
+    Meta: false
+  }
+
+  /**
+   * Update the `modifierKeyState`.
+   * @param {boolean} value
+   *  The value to set the appropriate field in the `modifierKeyState` to.
+   *  Should be `true` when the key is pressed down; `false` when the key is lifted up.
+   * @param {KeyboardEvent} e 
+   *  Event with the key to read.
+   */
+  const updateModifierKeyState = (value, e) => {
+    // Inspired by SRC: https://stackoverflow.com/a/45124140
+    console.debug(`<!> Key: ${e.key}`);
+    if (modifierKeyState.hasOwnProperty(e.key)) {
+      console.debug(`<!> is now: ${value}`);
+      modifierKeyState[e.key] = value;
+    }
+  }
+
+  /**
+   * Look up whether a modifier key is currently held down.
+   * @returns {boolean}
+   *  `true` just when a modifier key is currently held down.
+   */
+  const isModifierKeyDown = () => {
+    return modifierKeyState.Control || modifierKeyState.Alt || modifierKeyState.Meta;
+  }
 
   /**
    * Handle keypresses by the user. The following actions are supported:
@@ -203,11 +302,17 @@ document.addEventListener("DOMContentLoaded", () => {
    *  LETTER:
    *    "c", "a": Toggle contents bar
    *    "s", "f": Toggle sidenotes bar
+   *    "h":      Decrement the `.frame-number` of the topmost on-screen interactive diagram.
+   *    "l":      Increment the `.frame-number` of the topmost on-screen interactive diagram.
    * All alphabetic keys are case-insensitive.
    * @param {KeyboardEvent} e
    *  The event triggering this callback
    */
   const handleKeyDown = (e) => {
+    updateModifierKeyState(true, e); // Register keypress
+    if (isModifierKeyDown()) {
+      return; // Take no action while modifier key is held
+    }
     // Act on the relevant key press
     // Enclosed in a `try { ... } catch { ... }` because there may not be enough sections to match the key pressed,
     // if the key is one of `"!@#$%^&*()"`. This squashes index-out-of-bounds-errors.
@@ -256,9 +361,19 @@ document.addEventListener("DOMContentLoaded", () => {
         case "8":
         case "9":
           focusFrameNumber();
+          setTimeout(reloadTopmostInteractiveDiagram, 0.01); // Allow keypress to gothrough before reloading
           break;
         case "escape": // Not `"Escape"` due to `.toLowerCase()` in `switch`.
           unfocusFrameNumber();
+          reloadTopmostInteractiveDiagram();
+          break;
+        case "h":
+          decrementFrameNumber();
+          setTimeout(reloadTopmostInteractiveDiagram, 0.01); // Allow keypress to gothrough before reloading
+          break;
+        case "l":
+          incrementFrameNumber();
+          setTimeout(reloadTopmostInteractiveDiagram, 0.01); // Allow keypress to gothrough before reloading
           break;
         // Toggle sidebars
         case "c":
@@ -294,6 +409,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Add event listeners
   document.addEventListener("keydown", handleKeyDown);
+  document.addEventListener("keyup", ((e) => updateModifierKeyState(false, e)));
   document.getElementById("contents-bar-hide").onclick = toggleContentsBar;
   document.getElementById("sidenotes-bar-hide").onclick = toggleSidenotesBar;
 

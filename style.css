@@ -828,10 +828,22 @@ main.family .interactive-diagram-container {
   align-items: center;
   justify-content: center;
 }
-main.family .interactive-diagram-container > *.hidden {
-  height: 0;
-  width: 0;
-  border: none; /* Otherwise, space is reserved for the borders of hidden children ._. */
+main.family .interactive-diagram-container *.fake-hidden {
+  /*
+    This hack pushes the `.fake-hidden` elements off-screen.
+    
+    Some level of deceptive CSS is necessary here. The `<iframe>`s need to have
+    their proper width and height so that `q.uiver` can calculate how to render
+    the embedded diagram within; however, the `<iframe>`s cannot be within the
+    viewport because they would consume screen space while supposedly "hidden".
+    
+    The `top: -200vh;` does limit the possible heights of diagrams. If a diagram
+    is > 200vh high, then it will bleed into the viewport. However, if you have
+    a diagram that big, you really need to re-design it anyway...
+  */  
+  position: absolute;
+  left: 0vw;
+  top: -200vh;
 }
 
 main.family .interactive-diagram-frame {

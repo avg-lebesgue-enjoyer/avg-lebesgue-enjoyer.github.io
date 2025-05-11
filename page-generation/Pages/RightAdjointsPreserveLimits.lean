@@ -83,7 +83,7 @@ namespace RightAdjointsPreserveLimits
               [ .ps "Let $F : \\mathsf{C} \\to \\widetilde{\\mathsf{C}}$ be a left adjoint and let $\\tilde{\\lambda} : \\tilde{\\ell} \\Rightarrow \\widetilde{D}$ be a limit cone. We can form the cone $U \\tilde{\\lambda} : U \\tilde{\\ell} \\Rightarrow U \\widetilde{D}$, which we wish to show is a limit cone."
               , .ps "To this end, let $\\alpha : a \\Rightarrow U \\widetilde{D}$ be another cone over $U \\widetilde{D}$. We wish to show that there is a unique map from the summit $a$ of $\\alpha$ to the summit $U \\tilde{\\ell}$ of our proposed limit cone $U \\widetilde{\\lambda}$ which commutes with the cones. We first find such a map."
               , .ida
-                  [ { cda  := { href := FindMap.cda₁, height := some 302 }
+                  [ { cda  := { href := FindMap.cda₁, height := some 332 } -- Suggested height: `some 302`; overridden here for consistency
                     , text := some [.s "For any $f : i \\to j$ in $\\mathsf{J}$, the above diagram must commute."]
                     }
                   , { cda  := { href := FindMap.cda₂, height := some 332 }

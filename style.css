@@ -95,6 +95,12 @@ a {
   text-align: center;
 }
 
+/* Utility class to mark up a "keyboard shortcut" hint */
+.keyboard-shortcut-hint {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: small;
+}
+
 
 
 /* SECTION: Navigation bar */

@@ -344,7 +344,11 @@ private def sidenotesBar : StateT WriterState Id Unit := do
       inTag' "span" do
         appendHtml "Sidenotes"
       inTag "button" [.mk "id" "sidenotes-bar-hide"] do
-        appendHtml "hide"
+        indented do
+          appendHtml' "hide "
+          inlineTag "span" [.mk "class" "keyboard-shortcut-hint"] do
+            appendHtml' "(s)"
+          newLine
 
 /-- Write the `bar-title` of the contents bar. -/
 private def contentsBar.title : StateT WriterState Id Unit := do
@@ -352,7 +356,11 @@ private def contentsBar.title : StateT WriterState Id Unit := do
     inTag' "span" do
       appendHtml "Contents"
     inTag "button" [.mk "id" "contents-bar-hide"] do
-      appendHtml "hide"
+      indented do
+        appendHtml' "hide "
+        inlineTag "span" [.mk "class" "keyboard-shortcut-hint"] do
+          appendHtml' "(c)"
+        newLine
 
 /-- Write the `<ul>` of the contents bar. -/
 private def contentsBar.list (sections : List Section) : StateT WriterState Id Unit := do

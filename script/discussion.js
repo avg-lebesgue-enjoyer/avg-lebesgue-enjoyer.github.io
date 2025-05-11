@@ -125,6 +125,60 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /**
+   * Get the "left button" of the given interactive commutative `diagram`.
+   * @param {Element} diagram 
+   *  The diagram to get the left button of.
+   * @returns {Element | null}
+   *  The left button of the diagram, or `null` if it could not be found.
+   *  If the HTML is encoded correctly, then this method should never return `null`.
+   */
+  const getLeftButton = (diagram) => {
+    try {
+      return Array
+        .from(
+          Array.from(
+            Array.from(diagram.children)
+            [0] // `.interactive-diagram-frame`
+            .children
+          ).filter((element) => element.classList.contains("controls"))
+          [0] // `.controls`
+          .children
+        ).filter((element) => (element.tagName === "BUTTON"))
+        [0]
+      ;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /**
+   * Get the "right button" of the given interactive commutative `diagram`.
+   * @param {Element} diagram 
+   *  The diagram to get the right button of.
+   * @returns {Element | null}
+   *  The right button of the diagram, or `null` if it could not be found.
+   *  If the HTML is encoded correctly, then this method should never return `null`.
+   */
+  const getRightButton = (diagram) => {
+    try {
+      return Array
+        .from(
+          Array.from(
+            Array.from(diagram.children)
+            [0] // `.interactive-diagram-frame`
+            .children
+          ).filter((element) => element.classList.contains("controls"))
+          [0] // `.controls`
+          .children
+        ).filter((element) => (element.tagName === "BUTTON"))
+        [1]
+      ;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /**
    * Run the given `action` on the `.frame-number` field of the topmost interactive
    * diagram currently on screen.
    * Do nothing if there are no such diagrams on screen.
@@ -134,32 +188,28 @@ document.addEventListener("DOMContentLoaded", () => {
   const withFrameNumberField = (action) => {
     let diagrams = getOnScreenInteractiveDiagrams();
     if (diagrams.length === 0) {
-      console.debug("<!> NO DIAGRAMS")
       return;
     }
     const [diagram, ..._] = diagrams;
     const input = getFrameNumberField(diagram);
     if (input === null) {
-      console.debug("<!> NO INPUT")
       return; // Squash
     }
     action(input);
   }
 
   /**
-   * Update the topmost interactive diagram currently on screen, changing it
-   * to the frame number specified by its 
-   * Do nothing if there are no such diagrams on screen.
+   * Reload the given `diagram`; i.e. validate the data in the `.frame-number` field and render the frame
+   * specified in the `.frame-number` field.
+   * @param {Element} diagram 
+   *  The diagram to reload.
    */
-  const reloadTopmostInteractiveDiagram = () => {
-    console.debug("<!> Reloading...");
-    withTopmostInteractiveDiagram((diagram) => {
-      // Get the `.frame-number` field, and adjust its `.value` to fall
+  const reloadDiagram = (diagram) => {
+    // Get the `.frame-number` field, and adjust its `.value` to fall
       // between its `.min` and `.max`.
       const input = getFrameNumberField(diagram);
       input.value = input.value.replace(/\D/g,""); // Strip non-numeric characters; SRC: https://stackoverflow.com/a/1862219
       if (input === null || isNaN(Number(input.value))) {
-        console.debug(`<!> Input "${input.value}" failed to pass`);
         return; // Squash
       }
       if (Number(input.value) <= 0) {
@@ -185,7 +235,14 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       iframes[newFrameNumber - 1].classList.remove("fake-hidden");
       spans[newFrameNumber - 1].classList.remove("fake-hidden");
-    });
+  }
+
+  /**
+   * Reload the topmost interactive diagram currently on screen.
+   * Do nothing if there are no such diagrams.
+   */
+  const reloadTopmostInteractiveDiagram = () => {
+    withTopmostInteractiveDiagram(reloadDiagram);
   }
 
   /**
@@ -193,9 +250,7 @@ document.addEventListener("DOMContentLoaded", () => {
    * If there are no such diagrams on screen, then do nothing.
    */
   const focusFrameNumber = () => {
-    console.debug("<!> focusing frame");
     withFrameNumberField((input) => {
-      console.debug("<!> Input:");
       console.debug(input);
       if (input !== document.activeElement) {
         input.value = "";
@@ -212,28 +267,40 @@ document.addEventListener("DOMContentLoaded", () => {
     reloadTopmostInteractiveDiagram();
   }
 
-  // FIXME: Document!
-  const adjustFrameNumber = (offset) => {
+  /**
+   * Adjust the `.frame-number` of a diagram by accessing its `<input class="frame-number">`.
+   * @param {Number} offset
+   *  Amount by which to change the frame number.
+   * @param {Element} input 
+   *  The `<input class="frame-number">` to modify.
+   * @returns 
+   */
+  const adjustFrameNumber = (offset, input) => {
+    if (input === null || isNaN(Number(input.value))) {
+      return; // Squash
+    }
+    input.value = String(Number(input.value) + offset);
+  }
+
+  /**
+   * Decrement the frame number of the topmost on-screen interactive diagram.
+   * Do nothing if there are no such diagrams.
+   */
+  const decrementOnScreenFrameNumber = () => {
     withFrameNumberField((input) => {
-      if (input === null || isNaN(Number(input.value))) {
-        console.debug(`<!> Input "${input.value}" failed to pass`);
-        return; // Squash
-      }
-      input.value = String(Number(input.value) + offset);
+      adjustFrameNumber(-1, input);
     });
   }
 
-  // FIXME: Document!
-  const decrementFrameNumber = () => {
-    adjustFrameNumber(-1);
+  /**
+   * Increment the frame number of the topmost on-screen interactive diagram.
+   * Do nothing if there are no such diagrams.
+   */
+  const incrementOnScreenFrameNumber = () => {
+    withFrameNumberField((input) => {
+      adjustFrameNumber(+1, input);
+    });
   }
-
-  // FIXME: Document!
-  const incrementFrameNumber = () => {
-    adjustFrameNumber(+1);
-  }
-
-  // FIXME: Do this stuff for the ACTUAL BUTTONS' `.onClick` too
 
 
 
@@ -262,9 +329,7 @@ document.addEventListener("DOMContentLoaded", () => {
    */
   const updateModifierKeyState = (value, e) => {
     // Inspired by SRC: https://stackoverflow.com/a/45124140
-    console.debug(`<!> Key: ${e.key}`);
     if (modifierKeyState.hasOwnProperty(e.key)) {
-      console.debug(`<!> is now: ${value}`);
       modifierKeyState[e.key] = value;
     }
   }
@@ -368,11 +433,11 @@ document.addEventListener("DOMContentLoaded", () => {
           reloadTopmostInteractiveDiagram();
           break;
         case "h":
-          decrementFrameNumber();
+          decrementOnScreenFrameNumber();
           setTimeout(reloadTopmostInteractiveDiagram, 0.01); // Allow keypress to gothrough before reloading
           break;
         case "l":
-          incrementFrameNumber();
+          incrementOnScreenFrameNumber();
           setTimeout(reloadTopmostInteractiveDiagram, 0.01); // Allow keypress to gothrough before reloading
           break;
         // Toggle sidebars
@@ -412,6 +477,20 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("keyup", ((e) => updateModifierKeyState(false, e)));
   document.getElementById("contents-bar-hide").onclick = toggleContentsBar;
   document.getElementById("sidenotes-bar-hide").onclick = toggleSidenotesBar;
+  Array.from(document.getElementsByClassName("interactive-diagram-container")).forEach((diagram) => {
+    try {
+      getLeftButton(diagram).addEventListener("click", () => {
+        adjustFrameNumber(-1, getFrameNumberField(diagram));
+        reloadDiagram(diagram);
+      });
+      getRightButton(diagram).addEventListener("click", () => {
+        adjustFrameNumber(+1, getFrameNumberField(diagram));
+        reloadDiagram(diagram);
+      });
+    } catch (e) {
+      // Squash
+    }
+  });
 
   // Render all `KaTeX` content in the document.
   // SOURCE: https://katex.org/docs/autorender

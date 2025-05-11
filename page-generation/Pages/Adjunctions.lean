@@ -105,7 +105,7 @@ namespace Adjunctions
                   , .cda { href := raplHref, height := some 302 }
                   ]
               , outLink? :=
-                  { href := "../proof/rapl.html" : OutLink }
+                  { href := "../proof/right-adjoints-preserve-limits.html" : OutLink }
               }
           ]
       ]

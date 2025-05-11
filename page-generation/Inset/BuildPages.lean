@@ -364,7 +364,7 @@ private def contentsBar.title : StateT WriterState Id Unit := do
 
 /-- Write the `<ul>` of the contents bar. -/
 private def contentsBar.list (sections : List Section) (pageTitle : String) : StateT WriterState Id Unit := do
-  inTag "span" [.mk "class" "contents-bar-page-name"] do
+  inTag "div" [.mk "class" "contents-bar-page-name"] do
     indented do
       appendHtml' s!"{pageTitle}: "
       inlineTag "a" [.mk "href" "#"] do

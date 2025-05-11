@@ -628,7 +628,7 @@ main.family .bar-title button:hover {
 
 /* Style the list of contents. */
 main.family #contents-bar .contents-bar-page-name {
-  margin-left: 1em;
+  padding-left: 1em;
 }
 main.family #contents-bar ul {
   list-style-position: outside; /* NOTE: Different to the `<ul>`s in `glossary.html`. */

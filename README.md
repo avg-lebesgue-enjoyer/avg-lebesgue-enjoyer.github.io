@@ -3,32 +3,38 @@ have
 
 
 
-# SECTION: Notes
-Take `q.uiver`'s suggested `height`s and scale them by `0.7` on the `<iframe>` you try to embed.
-
-
-
-# SECTION: Things to fix, if possible
-  [ ] Hero image gets squished once width gets too small...
-    [ ] Use a media query to change out the image (different file) when the screen size is small enough.
-  [ ] When hovering over navbar links, the text transitions through *gray*. 
-    Could change from black --> white to (very dark blue) --> white
-  [ ] On non-homepage pages, have website title written next to logo in `<navbar>`.
-    [ ] Something like `"Empty Limit -> Glossary"` or `"Empty Limit -> Right Adjoints Preserve Limits"`
-      [ ] Time permitting, make these breadcrumbs into *functional* hyperlinks
-  [ ] On Discussion- and Proof-family pages, change top of contents bar to have page name shown once you scroll down
-
-
 # TODO LIST:
-`discussion/whatever.html`:
-  [ ] Make `<iframe>`s not terrible on screen sizes other than my own...
-  [ ] Make sidenotes appear as a pop up on tapping the link when too small
-    ^^ like wikipedia hovering over internal links
-  [ ] Redesign where necessary for mobile.
-    ^^ a decent chunk is necessary...
-    [ ] E.g. text should *left*-justify, rather than *justify*. (apple.com does this, for example)
 
-# ON SUBMIT ASSESSMENT:
+Missing content:
+  - [ ] Literally any real Proof-family pages
+    - [ ] `proof/right-adjoints-preserve-limits.html`
+    - [ ] Proper nice internal encodings of interactive diagrams
+    - [ ] HTML generation for interactive diagrams
+    - [ ] CSS for interactive diagrams
+    - [ ] JS for *interactive* diagrams
+  - [ ] More Discussion-family pages
+  - [ ] More Proof-family pages
+
+Defo fix:
+  - Discussion- and Proof-family pages:
+    - [ ] Make `<iframe>`s not terrible on screen sizes other than my own...
+    - [ ] Redesign where necessary for mobile.
+        - ^^ a decent chunk is necessary...
+        - [ ] E.g. text should *left*-justify, rather than *justify*. (apple.com does this, for example)
+  - General admin:
+    - [ ] Make this `README.md` nice for public repo viewing
+
+Fix if can:
+  - [ ] Hero image gets squished once width gets too small...
+    - [ ] Change the files in the `<picture>` for small enough screen size. No "cropped", or better cropping.
+  - [ ] Make sidenotes appear as a pop up on tapping the link when too small
+        - ^^ like wikipedia hovering over internal links
+  - [ ] When hovering over navbar links, the text transitions through *gray*. 
+    - Could change from "black --> white" to "(very dark blue) --> white"
+
+
+
+# SECTION: ON SUBMIT:
   - [ ] `git checkout -b submission-branch`; `git push --set-upstream origin submission-branch`
   - `suggestions.html`:
     - [ ] Change the "TODO:" message on submit to a "yay that worked!" message

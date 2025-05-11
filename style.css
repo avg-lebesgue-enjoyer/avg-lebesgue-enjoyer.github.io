@@ -822,7 +822,24 @@ main.family ul.see-also {
 
 /* SECTION: Proof-family pages: Interactive diagrams */
 
-main.family .interactive-diagram {
+main.family .interactive-diagram-container {
+  /* Sizing */
+  --width: 100%;
+  width: var(--width);
+  max-width: var(--width);
+  /* Internal content */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+main.family .interactive-diagram-container > *.hidden {
+  height: 0;
+  width: 0;
+  border: none; /* Otherwise, space is reserved for the borders of hidden children ._. */
+}
+
+main.family .interactive-diagram-frame {
   /* Colours */
   background-color: var(--secondary-background-colour);
   /* Sizing */
@@ -837,40 +854,40 @@ main.family .interactive-diagram {
   align-items: center;
   justify-content: center;
 }
-main.family .interactive-diagram > * {
+main.family .interactive-diagram-frame > * {
   --margin: 0.5em;
   width: 100%;
   padding-top: var(--margin);
   padding-bottom: var(--margin);
   text-align: center;
 }
-main.family .interactive-diagram > *:first-child {
-  padding-top: 0; /* Prevent background colour "clipping" into the `.interactive-diagram`'s border */
+main.family .interactive-diagram-frame > *:first-child {
+  padding-top: 0; /* Prevent background colour "clipping" into the `.interactive-diagram-frame`'s border */
   margin-top: var(--margin);
 }
-main.family .interactive-diagram > *:not(:last-child) {
+main.family .interactive-diagram-frame > *:not(:last-child) {
   border-bottom: var(--border-thickness) solid var(--border-colour);
 }
 
-main.family .interactive-diagram > .block-static-diagram-container {
+main.family .interactive-diagram-frame > .block-static-diagram-container {
   background-color: var(--default-background-colour);
 }
-main.family .interactive-diagram iframe.block-static-diagram {
+main.family .interactive-diagram-frame iframe.block-static-diagram {
   background-color: var(--secondary-background-colour);
 }
 
-main.family .interactive-diagram > .supporting-text {
+main.family .interactive-diagram-frame > .supporting-text {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
 }
-main.family .interactive-diagram > .supporting-text > * {
+main.family .interactive-diagram-frame > .supporting-text > * {
   margin-left: var(--margin);
   margin-right: var(--margin);
 }
 
-main.family .interactive-diagram > .controls {
+main.family .interactive-diagram-frame > .controls {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;

@@ -107,10 +107,10 @@ private def indented (child : StateT WriterState Id Unit) : StateT WriterState I
 
 /--
   Write out the `(option, value)` pairs in `tagOptions` as follows:
-  ```html5
-  option0=\"value0\"
+  ```
+  option0="value0"
   ⋯
-  optionN=\"valueN\"
+  optionN="valueN"
   ```
 -/
 private def appendOptions (tagOptions : List (String × String)) : StateT WriterState Id Unit := do
@@ -122,7 +122,7 @@ private def appendOptions (tagOptions : List (String × String)) : StateT Writer
 
   If the `tagOptions` is `[]`, print as above.
   If the `tagOptions` is non-empty, then print as follows:
-  ```html5
+  ```html
   <tagName
     option0 = "value0"
     ⋯
@@ -156,7 +156,7 @@ private def justTag'
 
   If the `tagOptions` is `[]`, print as above.
   If the `tagOptions` is non-empty, then print as follows:
-  ```html5
+  ```html
   <tagName
     option0 = "value0"
     ⋯
@@ -186,11 +186,11 @@ private def inTag'
 
 /--
   Print a child-less tag in the form
-  ```html5
+  ```html
   <tagName
-    option0=\"value0\"
+    option0="value0"
     ⋯
-    optionN=\"valueN\"
+    optionN="valueN"
   ></tagName>
   ```
 -/
@@ -227,12 +227,12 @@ private def inlineTag'
 
 /--
   Write a comment, styled as follows:
-  ```html5
+  ```html
   <!--
     ⋯
   -->
   ```
-  The `content` goes in the `⋯`.
+  The `lines` of content go in the `⋯`.
 -/
 private def comment
   (lines : List String)
@@ -243,6 +243,16 @@ private def comment
       for line in lines do
         appendHtml line
     appendHtml "-->"
+
+/--
+  Write a comment, stylised as follows:
+  ```html
+  <!-- ⋯ -->
+  ```
+  The `content` goes in the `⋯`.
+-/
+private def comment' (content : String) : StateT WriterState Id Unit := do
+  appendHtml s!"<!-- {content} -->"
 
 
 
@@ -365,10 +375,11 @@ private def contentsBar.title : StateT WriterState Id Unit := do
 /-- Write the `<ul>` of the contents bar. -/
 private def contentsBar.list (sections : List Section) (pageTitle : String) : StateT WriterState Id Unit := do
   inTag "div" [.mk "class" "contents-bar-page-name"] do
-    indented do
-      appendHtml' s!"{pageTitle}: "
-      inlineTag "a" [.mk "href" "#"] do
-        appendHtml' "(top)"
+    newLine
+    writeIndentation
+    appendHtml' s!"{pageTitle}: "
+    inlineTag "a" [.mk "href" "#"] do
+      appendHtml' "(top)"
   inTag' "ul" do
     for it in sections do
       inTag' "li" do
@@ -469,11 +480,70 @@ private def cda (d : Diagram) : StateT WriterState Id Unit := do
         | none    => options
         | some h  => .mk "height" s!"{h}" :: options
 
+/--
+  Write the controls bar for an interactive commutative diagram.
+
+  The "frame number" input is limited to a `max` value of `totalFrameCount`.
+-/
+private def ida.frame.controls (frameNumber : Nat) (totalFrameCount : Nat) : StateT WriterState Id Unit := do
+  inTag "div" [.mk "class" "controls"] do
+    inTag' "button" do
+      newLine
+      writeIndentation
+      appendHtml' "&larr; "
+      inlineTag "span" [.mk "class" "keyboard-shortcut-hint"] do
+        appendHtml' "(h)"
+    justTag "input"
+      [ .mk "type" "number"
+      , .mk "class" "frame-number"
+      , .mk "min" "1"
+      , .mk "max" s!"{totalFrameCount}"
+      , .mk "value" s!"{frameNumber}"
+      ]
+    inTag' "button" do
+      newLine
+      writeIndentation
+      inlineTag "span" [.mk "class" "keyboard-shortcut-hint"] do
+        appendHtml' "(l)"
+      appendHtml' " &rarr;"
+
+/--
+  Write out the optional "supporting text" of an interactive commutative diagram.
+
+  If `t = none`, then nothing is written at all.
+-/
+private def ida.frame.text (t : Option Text) : StateT WriterState Id Unit := do
+  match t with
+  | none => pure ()
+  | some t => do
+    inTag "div" [.mk "class" "supporting-text"] do
+      inTag' "span" do
+        _root_.text t
+
+/--
+  Write out a single `frame` in an interactive commutative diagram. `frameNumber` specifies the index of this frame,
+  **commencing with `1`**, out of a total of `totalFrameCount`.
+-/
+private def ida.frame (frameNumber : Nat) (totalFrameCount : Nat) (frame : IDFrame) : StateT WriterState Id Unit := do
+  inTag "div"
+    [ .mk
+      "class"
+      ( if frameNumber = 1
+        then "interactive-diagram-frame"
+        else "interactive-diagram-frame hidden"
+      )
+    ] do
+      cda frame.cda
+      ida.frame.text frame.text
+      ida.frame.controls frameNumber totalFrameCount
+
 /-- Write an interactive commutative diagram. -/
--- TODO: FIXME: Implement!
 private def ida (d : InteractiveDiagram) : StateT WriterState Id Unit := do
   set { (←get) with okAsDiscussion := false } -- No `InteractiveDiagram`s on Discussion-family pages
-  appendHtml "DEBUG: FIXME: Writing out interactive diagrams isn't supported yet!"
+  inTag "div" [.mk "class" "interactive-diagram-container"] do
+    for (frameNumber, frame) in d.enumFrom 1 do
+      comment' s!"Frame {frameNumber}"
+      ida.frame frameNumber d.length frame
 
 /-- Write the `Body` of some container. -/
 private def elementBody (b : Body) : StateT WriterState Id Unit := do

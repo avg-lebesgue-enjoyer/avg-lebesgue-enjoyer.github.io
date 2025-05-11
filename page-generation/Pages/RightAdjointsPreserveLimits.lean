@@ -11,7 +11,7 @@ import Inset.EncodePages
 -- NOTE: `q.uiver` URLs
 private def raplHref : String := "https://q.uiver.app/#q=WzAsNSxbMCwwLCJcXGNhdHtDfV57XFxjYXR7Sn19Il0sWzAsMiwiXFxjYXR7Q30iXSxbMiwwLCJcXGNhdHtcXHd0bHtDfX1ee1xcY2F0e0p9fSJdLFsyLDIsIlxcY2F0e1xcd3Rse0N9fSAiXSxbMSwxLCJcXGNpcmNsZWFycm93bGVmdF97XFxzaW1lcX0iXSxbMCwxLCJcXGxpbV97XFxjYXR7Sn19IiwyXSxbMiwzLCJcXGxpbV97XFxjYXR7Sn19Il0sWzEsMywiVSIsMl0sWzAsMiwiVSBcXGNpcmMgLSJdXQ==&macro_url=https%3A%2F%2Fgist.githubusercontent.com%2Favg-lebesgue-enjoyer%2Ffacad9c53abe5718a59f4400e28c87f3%2Fraw%2Fbf740cfaac1cf36f7c5faed44562c7fe9fd9f8f3%2Fquiver-preamble.tex"
 private def FindMap.cda₁ : String := "https://q.uiver.app/#q=WzAsNCxbMSwwLCJhIl0sWzEsMSwiXFxjaXJjbGVhcnJvd2xlZnQiXSxbMCwyLCJVIFxcd3Rse0R9IGkiXSxbMiwyLCJVXFx3dGx7RH1qIl0sWzIsMywiVSBcXHd0bHtEfSBmIiwyXSxbMCwyLCJcXGFscGhhX2kiLDJdLFswLDMsIlxcYWxwaGFfaiJdXQ==&macro_url=https%3A%2F%2Fgist.githubusercontent.com%2Favg-lebesgue-enjoyer%2Ffacad9c53abe5718a59f4400e28c87f3%2Fraw%2Fbf740cfaac1cf36f7c5faed44562c7fe9fd9f8f3%2Fquiver-preamble.tex"
-
+private def FindMap.cda₂ : String := "https://q.uiver.app/#q=WzAsMTAsWzMsNCwiXFxwaGFudG9te3h9Il0sWzEsMSwiYSJdLFswLDMsIlUgXFx3dGx7RH0gaSJdLFsyLDMsIlUgXFx3dGx7RH0gaiJdLFs0LDMsIlxcd3Rse0R9IGkiXSxbNiwzLCJcXHd0bHtEfSBqIl0sWzUsMSwiRiBhIl0sWzEsMiwiXFxjaXJjbGVhcnJvd2xlZnQiXSxbNSwyLCJcXGNpcmNsZWFycm93bGVmdCJdLFszLDAsIlxccGhhbnRvbXt4fSJdLFsxLDIsIlxcYWxwaGFfaSIsMl0sWzIsMywiVSBcXHd0bHtEfSBmIiwyXSxbMSwzLCJcXGFscGhhX2oiXSxbNiw0LCJcXG92ZXJsaW5le1xcYWxwaGFfaX0iLDJdLFs2LDUsIlxcb3ZlcmxpbmV7XFxhbHBoYV9qfSJdLFs0LDUsIlxcd3Rse0R9IGYiLDJdLFs5LDAsIkYgXFxkYXNodiBVIiwxLHsibGFiZWxfcG9zaXRpb24iOjEwLCJzdHlsZSI6eyJoZWFkIjp7Im5hbWUiOiJub25lIn19fV1d&macro_url=https%3A%2F%2Fgist.githubusercontent.com%2Favg-lebesgue-enjoyer%2Ffacad9c53abe5718a59f4400e28c87f3%2Fraw%2Fbf740cfaac1cf36f7c5faed44562c7fe9fd9f8f3%2Fquiver-preamble.tex"
 -- NOTE: `$$ ⋯ $$` contents
 private def raplEqn : String :=
   "\\lim_{\\mathsf{J}} \\left( U \\widetilde{D} \\right) \\simeq U \\left( \\lim_{\\mathsf{J}} \\widetilde{D} \\right)"
@@ -84,7 +84,10 @@ namespace RightAdjointsPreserveLimits
                   [ { cda  := { href := FindMap.cda₁, height := some 302 }
                     , text := some [.s "For any $f : i \\to j$ in $\\mathsf{J}$, the above diagram must commute."]
                     }
-                    -- FIXME: The rest of the owl...
+                  , { cda  := { href := FindMap.cda₂, height := some 332 }
+                    , text := some [.s "Since we have a limit over $\\widetilde{D}$, we transpose the left diagram to the right diagram. Commutativity is preserved by adjunctions, so $\\overline{\\alpha}$ is a cone over $\\widetilde{D}$."]
+                    }
+                  -- FIXME: Rest of the owl
                   ]
               ]
           ]

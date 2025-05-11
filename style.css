@@ -23,10 +23,12 @@
   /* Background colours */
   --default-background-colour: #fefefe;
   --secondary-background-colour: #faf8f8;
+  --error-background-colour: #ffcccc;
   /* Text colours */
   --default-text-colour: #000000;
   --light-text-colour: var(--default-background-colour);
   --error-text-colour: #ff0000;
+  --dark-error-text-colour: #aa0000;
   --light-underline-colour: #888888;
   /* Border colours */
   --border-colour: #000000;
@@ -123,7 +125,7 @@ nav {
 }
 
 
-.logo { /* TODO: Make this not look terrible on mobile */
+.logo {
   height: 44px;
   max-width: 44px;
   margin-left: var(--item-margin);
@@ -359,9 +361,25 @@ main form > input.submit {
   margin-left: auto;
   margin-right: auto;
   /* Colouring */
-  background-color: var(--light-accent-colour);
+  background-color: var(--secondary-background-colour);
   border: var(--border-thickness) solid var(--border-colour);
   border-radius: var(--border-radius);
+  transition: var(--transition-duration);
+}
+/*
+  Highlight the "submit" button in red on hover if the necessary fields aren't filled in.
+  The next CSS fragment overrides these styles if either the `#suggestion-topic` or `#suggestion-body`
+  have their `:placeholder-shown`.
+*/
+main form > input.submit:hover {
+  background-color: var(--accent-colour);
+  color: var(--light-text-colour);
+}
+/* Highlight the "submit" button on hover. */
+:root:has(#suggestion-topic:placeholder-shown) main form > input.submit:hover,
+:root:has(#suggestion-body:placeholder-shown) main form > input.submit:hover {
+  background-color: var(--error-background-colour);
+  color: var(--dark-error-text-colour);
 }
 
 

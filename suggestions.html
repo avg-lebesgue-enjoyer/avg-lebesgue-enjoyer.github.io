@@ -62,6 +62,7 @@
             name="suggestion-topic"
             id="suggestion-topic"
             placeholder="Example: 'Adjunction page: Include universal morphism definition'"
+            title="Concisely describe the topic of your suggestion."
             required
           >
           <br>
@@ -71,7 +72,8 @@
           <textarea
             name="suggestion-body"
             id="suggestion-body"
-            placeholder="Example: 'The universal morhpsim definition is really important! Please include it.'"
+            placeholder="Example: 'The universal morphsim definition is essential undertsanding. It provides context and strategy for the proof of Freyd's general adjoint functor theorem, for instance.'"
+            title="Detail your suggestion. Please be specific and clear in your comments."
             required
           ></textarea>
           <br>
@@ -100,9 +102,14 @@
             name="suggestion-comments"
             id="suggestion-comments"
             placeholder="Example: 'This would require updating the result about the equivalence of the various adjunction definitions.'"
+            title="Give any other remarks about your suggestion which don't fit in the previous text fields. May be left empty."
           ></textarea>
           <br>
-          <input type="submit" class="submit" value="Submit">
+          <input
+            type="submit"
+            class="submit"
+            value="Submit"
+          >
         </form>
         <div class="error hidden" id="suggestion-error-message">
           <p>

@@ -62,16 +62,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /**
    * Handle keypresses by the user. The following actions are supported:
-   *  `"0"`:          Jump to top
-   *  `"1"`:          Jump to the section at `sectionIds[0]`
-   *  `"2"`:          Jump to the section at `sectionIds[1]`
-   *  `"3"`:          Jump to the section at `sectionIds[2]`
-   *  `"4"`:          Jump to the section at `sectionIds[3]`
-   *  `"5"`:          Jump to the section at `sectionIds[4]`
-   *  `"6"`:          Jump to the section at `sectionIds[5]`
-   *  `"7"`:          Jump to the section at `sectionIds[6]`
-   *  `"8"`:          Jump to the section at `sectionIds[7]`
-   *  `"9"`:          Jump to the section at `sectionIds[secitonIds.length - 1]`
+   *  `")"`:          Jump to top
+   *  `"!"`:          Jump to the section at `sectionIds[0]`
+   *  `"@"`:          Jump to the section at `sectionIds[1]`
+   *  `"#"`:          Jump to the section at `sectionIds[2]`
+   *  `"$"`:          Jump to the section at `sectionIds[3]`
+   *  `"%"`:          Jump to the section at `sectionIds[4]`
+   *  `"^"`:          Jump to the section at `sectionIds[5]`
+   *  `"&"`:          Jump to the section at `sectionIds[6]`
+   *  `"*"`:          Jump to the section at `sectionIds[7]`
+   *  `"("`:          Jump to the section at `sectionIds[secitonIds.length - 1]`
    *  `"c"`, `"a"`:   Toggle contents bar
    *  `"s"`, `"f"`:   Toggle sidenotes bar
    * All alphabetic keys are case-insensitive.
@@ -85,34 +85,34 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       switch (e.key.toLowerCase()) {
         // Jump to section
-        case "1":
+        case "!":
           jumpToSection(sectionIds[0]);
           break;
-        case "2":
+        case "@":
           jumpToSection(sectionIds[1]);
           break;
-        case "3":
+        case "#":
           jumpToSection(sectionIds[2]);
           break;
-        case "4":
+        case "$":
           jumpToSection(sectionIds[3]);
           break;
-        case "5":
+        case "%":
           jumpToSection(sectionIds[4]);
           break;
-        case "6":
+        case "^":
           jumpToSection(sectionIds[5]);
           break;
-        case "7":
+        case "&":
           jumpToSection(sectionIds[6]);
           break;
-        case "8":
+        case "*":
           jumpToSection(sectionIds[7]);
           break;
-        case "9":
+        case "(":
           jumpToSection(sectionIds[sectionIds.length - 1]);
           break;
-        case "0":
+        case ")":
           jumpToTop();
           break;
         // Toggle sidebars

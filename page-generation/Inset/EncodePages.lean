@@ -61,6 +61,8 @@ def Equation.toString : Equation → String := id
 abbrev BigEquation : Type := List String
 /-- Extract the underlying list of lines to render in a `BigEquation`. -/
 def BigEquation.toList : BigEquation → List String := id
+/-- A line-break in `TeX`. -/
+def String.alignBreak := " \\\\"
 
 
 
@@ -104,7 +106,7 @@ inductive TextContent : Type where
 def TextContent.s : String → TextContent :=
   TextContent.e ∘ TextElement.s
 /--
-  An inline `$ ⋯ $` equation.
+  A displaystyle `$$ ⋯ $$` equation.
   Provide the string to be placed in `⋯` as an argument.
 -/
 def TextContent.eqn : Equation → TextContent :=
@@ -139,9 +141,9 @@ structure Diagram : Type where
     Height of the `<iframe>` to render.
     If `none`, allow the CSS to determine the width and height. The CSS isn't very good at it, though...
 
-    Default: `none`
+    Default: `some 302`
   -/
-  height : Option Nat := none
+  height : Option Nat := some 302
 
 /-- A single frame in an `InteractiveDiagram`. -/
 structure IDFrame : Type where

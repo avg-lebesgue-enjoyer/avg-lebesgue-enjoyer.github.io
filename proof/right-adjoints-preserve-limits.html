@@ -97,6 +97,16 @@
                 </a>
               </li>
               <li>
+                <a href="#Diagrammatic-proof">
+                  Diagrammatic proof
+                </a>
+              </li>
+              <li>
+                <a href="#Yoneda-style-equational-proof">
+                  Yoneda-style equational proof
+                </a>
+              </li>
+              <li>
                 <a href="#See-also">
                   See also
                 </a>
@@ -133,6 +143,110 @@
               ></iframe>
             </div>
           </div>
+        </section>
+        <section id="Diagrammatic-proof">
+          <h2>
+            Diagrammatic proof
+          </h2>
+          <p>
+            Let $F : \mathsf{C} \to \widetilde{\mathsf{C}}$ be a left adjoint and let $\tilde{\lambda} : \tilde{\ell} \Rightarrow \widetilde{D}$ be a limit cone. We can form the cone $U \tilde{\lambda} : U \tilde{\ell} \Rightarrow U \widetilde{D}$, which we wish to show is a limit cone.
+          </p>
+          <p>
+            To this end, let $\alpha : a \Rightarrow U \widetilde{D}$ be another cone over $U \widetilde{D}$. We wish to show that there is a unique map from the summit $a$ of $\alpha$ to the summit $U \tilde{\ell}$ of our proposed limit cone $U \widetilde{\lambda}$ which commutes with the cones. We first find such a map.
+          </p>
+          <!-- TESTING:: -->
+          <!-- Frame 1 -->
+          <div class="interactive-diagram hidden">
+            <div class="block-static-diagram-container">
+              <iframe
+                height="302"
+                class="quiver-embed block-static-diagram"
+                src="https://q.uiver.app/#q=WzAsNCxbMSwwLCJhIl0sWzEsMSwiXFxjaXJjbGVhcnJvd2xlZnQiXSxbMCwyLCJVIFxcd3Rse0R9IGkiXSxbMiwyLCJVXFx3dGx7RH1qIl0sWzIsMywiVSBcXHd0bHtEfSBmIiwyXSxbMCwyLCJcXGFscGhhX2kiLDJdLFswLDMsIlxcYWxwaGFfaiJdXQ==&macro_url=https%3A%2F%2Fgist.githubusercontent.com%2Favg-lebesgue-enjoyer%2Ffacad9c53abe5718a59f4400e28c87f3%2Fraw%2Fbf740cfaac1cf36f7c5faed44562c7fe9fd9f8f3%2Fquiver-preamble.tex&embed"
+              ></iframe>
+            </div>
+            <div class="supporting-text">
+              <span>
+                For any $f : i \to j$ in $\mathsf{J}$, the above diagram must commute.
+              </span>
+            </div>
+            <div class="controls">
+              <button class="left">
+                &larr; <span class=keyboard-shortcut-hint>(h)</span>
+              </button>
+              <input type="number" class="frame-number" min="1" max="4">
+              <button class="right">
+                <span class=keyboard-shortcut-hint>(l)</span> &rarr; 
+              </button>
+            </div>
+          </div>
+          <!-- Frame 2 -->
+          <div class="interactive-diagram">
+            <div class="block-static-diagram-container">
+              <iframe
+                height="332"
+                class="quiver-embed block-static-diagram"
+                src="https://q.uiver.app/#q=WzAsMTAsWzMsNCwiXFxwaGFudG9te3h9Il0sWzEsMSwiYSJdLFswLDMsIlUgXFx3dGx7RH0gaSJdLFsyLDMsIlUgXFx3dGx7RH0gaiJdLFs0LDMsIlxcd3Rse0R9IGkiXSxbNiwzLCJcXHd0bHtEfSBqIl0sWzUsMSwiRiBhIl0sWzEsMiwiXFxjaXJjbGVhcnJvd2xlZnQiXSxbNSwyLCJcXGNpcmNsZWFycm93bGVmdCJdLFszLDAsIlxccGhhbnRvbXt4fSJdLFsxLDIsIlxcYWxwaGFfaSIsMl0sWzIsMywiVSBcXHd0bHtEfSBmIiwyXSxbMSwzLCJcXGFscGhhX2oiXSxbNiw0LCJcXG92ZXJsaW5le1xcYWxwaGFfaX0iLDJdLFs2LDUsIlxcb3ZlcmxpbmV7XFxhbHBoYV9qfSJdLFs0LDUsIlxcd3Rse0R9IGYiLDJdLFs5LDAsIkYgXFxkYXNodiBVIiwxLHsibGFiZWxfcG9zaXRpb24iOjEwLCJzdHlsZSI6eyJoZWFkIjp7Im5hbWUiOiJub25lIn19fV1d&macro_url=https%3A%2F%2Fgist.githubusercontent.com%2Favg-lebesgue-enjoyer%2Ffacad9c53abe5718a59f4400e28c87f3%2Fraw%2Fbf740cfaac1cf36f7c5faed44562c7fe9fd9f8f3%2Fquiver-preamble.tex&embed"
+              ></iframe>
+            </div>
+            <div class="supporting-text">
+              <span>
+                Since we have a limit over $\widetilde{D}$, we transpose the left diagram to the right diagram. Commutativity is preserved by adjunctions, so $\overline{\alpha}$ is a cone over $\widetilde{D}$.
+              </span>
+            </div>
+            <div class="controls">
+              <button class="left">
+                &larr; <span class=keyboard-shortcut-hint>(h)</span>
+              </button>
+              <input type="number" class="frame-number" min="1" max="4">
+              <button class="right">
+                <span class=keyboard-shortcut-hint>(l)</span> &rarr; 
+              </button>
+            </div>
+          </div>
+          DEBUG: FIXME: Writing out interactive diagrams isn't supported yet!
+          <!-- ::TESTING -->
+        </section>
+        <section id="Yoneda-style-equational-proof">
+          <h2>
+            Yoneda-style equational proof
+          </h2>
+          <p>
+            Let $F : \mathsf{C} \to \widetilde{\mathsf{C}}$ be a left adjoint. Then, we have the following isomorphisms, all natural in $z \in \mathsf{C}^{\mathrm{op}}$.
+            $$\begin{align*}
+               \mathsf{C}\left(
+                 z, U\left(
+                   \lim_{\mathsf{J}} \widetilde{D}
+                 \right)
+               \right)
+               &\simeq \widetilde{\mathsf{C}}\left(
+                 F z, \lim_{\mathsf{J}} \widetilde{D}
+               \right)
+               \\
+               &\simeq \lim_{j \in \mathsf{J}}
+                 \widetilde{\mathsf{C}}\left(
+                   F z, \widetilde{D} j
+                 \right)
+               \\
+               &\simeq \lim_{j \in \mathsf{J}}
+                 \mathsf{C}\left(
+                   z, U \widetilde{D}
+                 \right)
+               \\
+               \mathsf{C}\left(
+                 z, U\left(
+                   \lim_{\mathsf{J}} \widetilde{D}
+                 \right)
+               \right)
+               &\simeq \mathsf{C}\left(
+                 z, \lim_{\mathsf{J}} U \widetilde{D}
+               \right)
+            \end{align*}$$
+            By the <a href=discussion/yoneda-lemma.html>Yoneda lemma</a>, we conclude that$$
+              \lim_{\mathsf{J}} \left( U \widetilde{D} \right) \simeq U \left( \lim_{\mathsf{J}} \widetilde{D} \right)
+            $$as desired.<span class=sidenote-container><sup><a class=sidenote-anchor href=#sidenote-1>[1]</a></sup><span class=sidenote id=sidenote-1>
+            [1]
+            This argument is not 100% airtight &mdash; it seemingly assumes the existence of $\lim_{\mathsf{J}} U \widetilde{D}$. It is not difficult to fix this inaccuracy, and so it is left as an exercise to the reader.</span></span>
+          </p>
         </section>
         <section id="See-also">
           <h2>

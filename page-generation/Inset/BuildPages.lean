@@ -524,23 +524,6 @@ private def ida.frame.text (texts : List (Option Text)) : StateT WriterState Id 
         comment' s!"Frame {frameNumber}"
         _root_.text text
 
--- /--
---   Write out a single `frame` in an interactive commutative diagram. `frameNumber` specifies the index of this frame,
---   **commencing with `1`**, out of a total of `totalFrameCount`.
--- -/
--- private def ida.frame (frameNumber : Nat) (totalFrameCount : Nat) (frame : IDFrame) : StateT WriterState Id Unit := do
---   inTag "div"
---     [ .mk
---       "class"
---       ( if frameNumber = 1
---         then "interactive-diagram-frame"
---         else "interactive-diagram-frame hidden"
---       )
---     ] do
---       cda frame.cda
---       ida.frame.text frame.text
---       ida.frame.controls totalFrameCount
-
 /-- Write out the (static) commutative diagrams within an interactive commutative diagram. -/
 private def ida.frame.cdas (ds : List Diagram) : StateT WriterState Id Unit := do
   inTag "div" [.mk "class" "block-static-diagram-container"] do

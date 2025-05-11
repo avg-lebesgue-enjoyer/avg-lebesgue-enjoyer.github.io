@@ -68,9 +68,6 @@ body {
   margin: 0;                          /* No unnecessary margin! */
   display: grid;                      /* Use a grid to position the three elements <nav>, <main> and <footer> within */
   grid-template-rows: auto 1fr auto;  /*  */
-  /* TESTING:: */
-  background-color: var(--test-variable);
-  /* ::TESTING */
 }
 
 a {

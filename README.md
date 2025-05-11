@@ -18,7 +18,6 @@ Take `q.uiver`'s suggested `height`s and scale them by `0.7` on the `<iframe>` y
     [ ] Something like `"Empty Limit -> Glossary"` or `"Empty Limit -> Right Adjoints Preserve Limits"`
       [ ] Time permitting, make these breadcrumbs into *functional* hyperlinks
   [ ] On Discussion- and Proof-family pages, change top of contents bar to have page name shown once you scroll down
-  [ ] On Discussion- and Proof-family pages, for hiding sidebars, show the keyboard shortcut with one of the cool `⌘` sort of icons
   [ ] WARNING: For assessment purposes, the various `.js` files need to be combined into one enormous one.
     [ ] `git checkout -b submissionbranch` when you go to do this; don't mess up the repo
   [ ] fwiw, it's actually really easy to add darkmode:

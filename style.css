@@ -603,6 +603,7 @@ main.family .bar-title {
   /* Division */
   padding-bottom: calc(2 * var(--border-thickness));
   border-bottom: var(--border-thickness) solid var(--border-colour);
+  margin-bottom: 1em;
   /* Internal flow */
   display: flex;
   flex-direction: row;
@@ -625,9 +626,17 @@ main.family .bar-title button:hover {
 }
 
 
+/* Style the list of contents. */
+main.family #contents-bar .contents-bar-page-name {
+  margin-left: 1em;
+}
 main.family #contents-bar ul {
   list-style-position: outside; /* NOTE: Different to the `<ul>`s in `glossary.html`. */
   padding-left: 2em;
+  margin-top: 0;
+}
+main.family #contents-bar li {
+  padding-top: 0.1em;
 }
 
 /*

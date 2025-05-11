@@ -363,7 +363,12 @@ private def contentsBar.title : StateT WriterState Id Unit := do
         newLine
 
 /-- Write the `<ul>` of the contents bar. -/
-private def contentsBar.list (sections : List Section) : StateT WriterState Id Unit := do
+private def contentsBar.list (sections : List Section) (pageTitle : String) : StateT WriterState Id Unit := do
+  inTag "span" [.mk "class" "contents-bar-page-name"] do
+    indented do
+      appendHtml' s!"{pageTitle}: "
+      inlineTag "a" [.mk "href" "#"] do
+        appendHtml' "(top)"
   inTag' "ul" do
     for it in sections do
       inTag' "li" do
@@ -373,13 +378,13 @@ private def contentsBar.list (sections : List Section) : StateT WriterState Id U
       inTag "a" [.mk "href" "#See-also"] do
         appendHtml "See also"
 
-/-- Write the contents bar. The `sections` are used to generate the `<li>`s in the `<ul>`. -/
-private def contentsBar (sections : List Section) : StateT WriterState Id Unit := do
+/-- Write the contents bar. The `sections` are used to generate the `<li>`s in the `<ul>`. The `pageTitle` is used for a "top of page" link. -/
+private def contentsBar (sections : List Section) (pageTitle : String) : StateT WriterState Id Unit := do
   inTag "div" [.mk "id" "contents-bar"] do
     inTag "div" [.mk "id" "contents-bar-outer-container"] do
       inTag "div" [.mk "id" "contents-bar-inner-container"] do
         contentsBar.title
-        contentsBar.list sections
+        contentsBar.list sections pageTitle
 
 /-- Write a `TextElement`. -/
 private def textElement (element : TextElement) : StateT WriterState Id Unit := do
@@ -547,7 +552,7 @@ private def article (page : Page) : StateT WriterState Id Unit := do
 /-- Write the `<main> ⋯ </main>`. -/
 private def main (page : Page) : StateT WriterState Id Unit := do
   inTag "main" [.mk "class" "family"] do
-    contentsBar page.sections
+    contentsBar page.sections page.title
     article page
     sidenotesBar
 

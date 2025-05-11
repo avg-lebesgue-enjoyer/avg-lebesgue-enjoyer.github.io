@@ -13,6 +13,7 @@ private def raplHref : String := "https://q.uiver.app/#q=WzAsNSxbMCwwLCJcXGNhdHt
 private def FindMap.cda₁ : String := "https://q.uiver.app/#q=WzAsNCxbMSwwLCJhIl0sWzEsMSwiXFxjaXJjbGVhcnJvd2xlZnQiXSxbMCwyLCJVIFxcd3Rse0R9IGkiXSxbMiwyLCJVXFx3dGx7RH1qIl0sWzIsMywiVSBcXHd0bHtEfSBmIiwyXSxbMCwyLCJcXGFscGhhX2kiLDJdLFswLDMsIlxcYWxwaGFfaiJdXQ==&macro_url=https%3A%2F%2Fgist.githubusercontent.com%2Favg-lebesgue-enjoyer%2Ffacad9c53abe5718a59f4400e28c87f3%2Fraw%2Fbf740cfaac1cf36f7c5faed44562c7fe9fd9f8f3%2Fquiver-preamble.tex"
 private def FindMap.cda₂ : String := "https://q.uiver.app/#q=WzAsMTAsWzMsNCwiXFxwaGFudG9te3h9Il0sWzEsMSwiYSJdLFswLDMsIlUgXFx3dGx7RH0gaSJdLFsyLDMsIlUgXFx3dGx7RH0gaiJdLFs0LDMsIlxcd3Rse0R9IGkiXSxbNiwzLCJcXHd0bHtEfSBqIl0sWzUsMSwiRiBhIl0sWzEsMiwiXFxjaXJjbGVhcnJvd2xlZnQiXSxbNSwyLCJcXGNpcmNsZWFycm93bGVmdCJdLFszLDAsIlxccGhhbnRvbXt4fSJdLFsxLDIsIlxcYWxwaGFfaSIsMl0sWzIsMywiVSBcXHd0bHtEfSBmIiwyXSxbMSwzLCJcXGFscGhhX2oiXSxbNiw0LCJcXG92ZXJsaW5le1xcYWxwaGFfaX0iLDJdLFs2LDUsIlxcb3ZlcmxpbmV7XFxhbHBoYV9qfSJdLFs0LDUsIlxcd3Rse0R9IGYiLDJdLFs5LDAsIkYgXFxkYXNodiBVIiwxLHsibGFiZWxfcG9zaXRpb24iOjEwLCJzdHlsZSI6eyJoZWFkIjp7Im5hbWUiOiJub25lIn19fV1d&macro_url=https%3A%2F%2Fgist.githubusercontent.com%2Favg-lebesgue-enjoyer%2Ffacad9c53abe5718a59f4400e28c87f3%2Fraw%2Fbf740cfaac1cf36f7c5faed44562c7fe9fd9f8f3%2Fquiver-preamble.tex"
 private def FindMap.cda₃ : String := "https://q.uiver.app/#q=WzAsMTAsWzMsNCwiXFxwaGFudG9te3h9Il0sWzEsMSwiXFxncmF5e2F9Il0sWzAsMywiXFxncmF5e1UgXFx3dGx7RH0gaX0iXSxbMiwzLCJcXGdyYXl7VSBcXHd0bHtEfSBqfSJdLFs0LDMsIlxcd3Rse0R9IGkiXSxbNiwzLCJcXHd0bHtEfSBqIl0sWzUsMSwiRiBhIl0sWzEsMiwiXFxncmF5e1xcY2lyY2xlYXJyb3dsZWZ0fSJdLFszLDAsIlxccGhhbnRvbXt4fSJdLFs1LDIsIlxcdGlsZGV7XFxlbGx9Il0sWzEsMiwiXFxncmF5e1xcYWxwaGFfaX0iLDIseyJjb2xvdXIiOlswLDAsMzJdfSxbMCwwLDMyLDFdXSxbMiwzLCJcXGdyYXl7VSBcXHd0bHtEfSBmfSIsMix7ImNvbG91ciI6WzAsMCwzMl19LFswLDAsMzIsMV1dLFsxLDMsIlxcZ3JheXtcXGFscGhhX2p9IiwwLHsiY29sb3VyIjpbMCwwLDMyXX0sWzAsMCwzMiwxXV0sWzYsNCwiXFxvdmVybGluZXtcXGFscGhhX2l9IiwyXSxbNiw1LCJcXG92ZXJsaW5le1xcYWxwaGFfan0iXSxbNCw1LCJcXHd0bHtEfSBmIiwyXSxbOCwwLCJGIFxcZGFzaHYgVSIsMSx7ImxhYmVsX3Bvc2l0aW9uIjoxMCwiY29sb3VyIjpbMCwwLDMyXSwic3R5bGUiOnsiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX0sWzAsMCwzMiwxXV0sWzYsOSwiXFxleGlzdHMgISBcXHRpbGRle3V9IiwxXSxbOSw0LCJcXHRpbGRle1xcbGFtYmRhfV9pIiwxXSxbOSw1LCJcXHRpbGRle1xcbGFtYmRhfV9qIiwxXV0=&macro_url=https%3A%2F%2Fgist.githubusercontent.com%2Favg-lebesgue-enjoyer%2Ffacad9c53abe5718a59f4400e28c87f3%2Fraw%2F81aa235cf14b3a74a2d46500473a6f1b617ce2e7%2Fquiver-preamble.tex"
+private def FindMap.cda₄ : String := "https://q.uiver.app/#q=WzAsMTAsWzMsNCwiXFxwaGFudG9te3h9Il0sWzEsMSwiYSJdLFswLDMsIlUgXFx3dGx7RH0gaSJdLFsyLDMsIlUgXFx3dGx7RH0gaiJdLFs0LDMsIlxcZ3JheXtcXHd0bHtEfSBpfSJdLFs2LDMsIlxcZ3JheXtcXHd0bHtEfSBqfSJdLFs1LDEsIlxcZ3JheXtGIGF9Il0sWzMsMCwiXFxwaGFudG9te3h9Il0sWzUsMiwiXFxncmF5e1xcdGlsZGV7XFxlbGx9fSJdLFsxLDIsIlUgXFx0aWxkZXtcXGVsbH0iXSxbMSwyLCJcXGdyYXl7XFxhbHBoYV9pfSIsMl0sWzIsMywiXFxncmF5e1UgXFx3dGx7RH0gZn0iLDJdLFsxLDMsIlxcZ3JheXtcXGFscGhhX2p9Il0sWzYsNCwiXFxvdmVybGluZXtcXGFscGhhX2l9IiwyLHsiY29sb3VyIjpbMCwwLDMyXX0sWzAsMCwzMiwxXV0sWzYsNSwiXFxvdmVybGluZXtcXGFscGhhX2p9IiwwLHsiY29sb3VyIjpbMCwwLDMyXX0sWzAsMCwzMiwxXV0sWzQsNSwiXFx3dGx7RH0gZiIsMix7ImNvbG91ciI6WzAsMCwzMl19LFswLDAsMzIsMV1dLFs3LDAsIkYgXFxkYXNodiBVIiwxLHsibGFiZWxfcG9zaXRpb24iOjEwLCJzdHlsZSI6eyJoZWFkIjp7Im5hbWUiOiJub25lIn19fV0sWzYsOCwiXFxleGlzdHMgISBcXHRpbGRle3V9IiwxLHsiY29sb3VyIjpbMCwwLDMyXX0sWzAsMCwzMiwxXV0sWzgsNCwiXFx0aWxkZXtcXGxhbWJkYX1faSIsMSx7ImNvbG91ciI6WzAsMCwzMl19LFswLDAsMzIsMV1dLFs4LDUsIlxcdGlsZGV7XFxsYW1iZGF9X2oiLDEseyJjb2xvdXIiOlswLDAsMzJdfSxbMCwwLDMyLDFdXSxbMSw5LCJcXG92ZXJsaW5le1xcdGlsZGV7dX19IiwxXSxbOSwyLCJVXFx0aWxkZXtcXGxhbWJkYX1faSIsMV0sWzksMywiVSBcXHRpbGRle1xcbGFtYmRhfV9qIiwxXV0=&macro_url=https%3A%2F%2Fgist.githubusercontent.com%2Favg-lebesgue-enjoyer%2Ffacad9c53abe5718a59f4400e28c87f3%2Fraw%2F81aa235cf14b3a74a2d46500473a6f1b617ce2e7%2Fquiver-preamble.tex"
 -- NOTE: `$$ ⋯ $$` contents
 private def raplEqn : String :=
   "\\lim_{\\mathsf{J}} \\left( U \\widetilde{D} \\right) \\simeq U \\left( \\lim_{\\mathsf{J}} \\widetilde{D} \\right)"
@@ -91,7 +92,11 @@ namespace RightAdjointsPreserveLimits
                   , { cda  := { href := FindMap.cda₃, height := some 332 }
                     , text := some [.s "The cone $\\overline{\\alpha}$ factors through the limit cone along some (unique) map $\\tilde{u}$."]
                     }
+                  , { cda  := { href := FindMap.cda₄, height := some 332 }
+                    , text := some [.s "Transposing this diagram back, we obtain a map $\\overline{\\tilde{u}}$ from the cone $\\alpha$ to the cone $U \\tilde{\\lambda}$."]
+                    }
                   ]
+              , .ps "Therefore, there is such a map. Demonstrating its uniqueness is left as an exercise to the reader."
               ]
           ]
       , .mk
@@ -101,7 +106,7 @@ namespace RightAdjointsPreserveLimits
                   [ .s "Let $F : \\mathsf{C} \\to \\widetilde{\\mathsf{C}}$ be a left adjoint. Then, we have the following isomorphisms, all natural in $z \\in \\mathsf{C}^{\\mathrm{op}}$."
                   , .al yonedaAlign
                   , .s "By the "
-                  , .a "discussion/yoneda-lemma.html" "Yoneda lemma"
+                  , .a "../discussion/yoneda-lemma.html" "Yoneda lemma"
                   , .s ", we conclude that"
                   , .eqn raplEqn
                   , .s "as desired."
@@ -117,6 +122,7 @@ namespace RightAdjointsPreserveLimits
         { links :=
             [ .mk "../discussion/adjunctions.html" "Adjunctions"
             , .mk "../discussion/limits.html" "Limits"
+            , .mk "../discussion/yoneda-lemma.html" "Yoneda Lemma"
             ]
         }
     }

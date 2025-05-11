@@ -157,7 +157,7 @@
           </p>
           <div class="interactive-diagram-container">
             <!-- Frame 1 -->
-            <div class="interactive-diagram-frame hidden">
+            <div class="interactive-diagram-frame">
               <div class="block-static-diagram-container">
                 <iframe
                   height="302"
@@ -178,7 +178,7 @@
                   type="number"
                   class="frame-number"
                   min="1"
-                  max="3"
+                  max="4"
                   value="1"
                 >
                 <button>
@@ -208,7 +208,7 @@
                   type="number"
                   class="frame-number"
                   min="1"
-                  max="3"
+                  max="4"
                   value="2"
                 >
                 <button>
@@ -217,7 +217,7 @@
               </div>
             </div>
             <!-- Frame 3 -->
-            <div class="interactive-diagram-frame">
+            <div class="interactive-diagram-frame hidden">
               <div class="block-static-diagram-container">
                 <iframe
                   height="332"
@@ -238,7 +238,7 @@
                   type="number"
                   class="frame-number"
                   min="1"
-                  max="3"
+                  max="4"
                   value="3"
                 >
                 <button>
@@ -246,7 +246,40 @@
                 </button>
               </div>
             </div>
+            <!-- Frame 4 -->
+            <div class="interactive-diagram-frame hidden">
+              <div class="block-static-diagram-container">
+                <iframe
+                  height="332"
+                  class="quiver-embed block-static-diagram"
+                  src="https://q.uiver.app/#q=WzAsMTAsWzMsNCwiXFxwaGFudG9te3h9Il0sWzEsMSwiYSJdLFswLDMsIlUgXFx3dGx7RH0gaSJdLFsyLDMsIlUgXFx3dGx7RH0gaiJdLFs0LDMsIlxcZ3JheXtcXHd0bHtEfSBpfSJdLFs2LDMsIlxcZ3JheXtcXHd0bHtEfSBqfSJdLFs1LDEsIlxcZ3JheXtGIGF9Il0sWzMsMCwiXFxwaGFudG9te3h9Il0sWzUsMiwiXFxncmF5e1xcdGlsZGV7XFxlbGx9fSJdLFsxLDIsIlUgXFx0aWxkZXtcXGVsbH0iXSxbMSwyLCJcXGdyYXl7XFxhbHBoYV9pfSIsMl0sWzIsMywiXFxncmF5e1UgXFx3dGx7RH0gZn0iLDJdLFsxLDMsIlxcZ3JheXtcXGFscGhhX2p9Il0sWzYsNCwiXFxvdmVybGluZXtcXGFscGhhX2l9IiwyLHsiY29sb3VyIjpbMCwwLDMyXX0sWzAsMCwzMiwxXV0sWzYsNSwiXFxvdmVybGluZXtcXGFscGhhX2p9IiwwLHsiY29sb3VyIjpbMCwwLDMyXX0sWzAsMCwzMiwxXV0sWzQsNSwiXFx3dGx7RH0gZiIsMix7ImNvbG91ciI6WzAsMCwzMl19LFswLDAsMzIsMV1dLFs3LDAsIkYgXFxkYXNodiBVIiwxLHsibGFiZWxfcG9zaXRpb24iOjEwLCJzdHlsZSI6eyJoZWFkIjp7Im5hbWUiOiJub25lIn19fV0sWzYsOCwiXFxleGlzdHMgISBcXHRpbGRle3V9IiwxLHsiY29sb3VyIjpbMCwwLDMyXX0sWzAsMCwzMiwxXV0sWzgsNCwiXFx0aWxkZXtcXGxhbWJkYX1faSIsMSx7ImNvbG91ciI6WzAsMCwzMl19LFswLDAsMzIsMV1dLFs4LDUsIlxcdGlsZGV7XFxsYW1iZGF9X2oiLDEseyJjb2xvdXIiOlswLDAsMzJdfSxbMCwwLDMyLDFdXSxbMSw5LCJcXG92ZXJsaW5le1xcdGlsZGV7dX19IiwxXSxbOSwyLCJVXFx0aWxkZXtcXGxhbWJkYX1faSIsMV0sWzksMywiVSBcXHRpbGRle1xcbGFtYmRhfV9qIiwxXV0=&macro_url=https%3A%2F%2Fgist.githubusercontent.com%2Favg-lebesgue-enjoyer%2Ffacad9c53abe5718a59f4400e28c87f3%2Fraw%2F81aa235cf14b3a74a2d46500473a6f1b617ce2e7%2Fquiver-preamble.tex&embed"
+                ></iframe>
+              </div>
+              <div class="supporting-text">
+                <span>
+                  Transposing this diagram back, we obtain a map $\overline{\tilde{u}}$ from the cone $\alpha$ to the cone $U \tilde{\lambda}$.
+                </span>
+              </div>
+              <div class="controls">
+                <button>
+                  &larr; <span class=keyboard-shortcut-hint>(h)</span>
+                </button>
+                <input
+                  type="number"
+                  class="frame-number"
+                  min="1"
+                  max="4"
+                  value="4"
+                >
+                <button>
+                  <span class=keyboard-shortcut-hint>(l)</span> &rarr;
+                </button>
+              </div>
+            </div>
           </div>
+          <p>
+            Therefore, there is such a map. Demonstrating its uniqueness is left as an exercise to the reader.
+          </p>
         </section>
         <section id="Yoneda-style-equational-proof">
           <h2>
@@ -283,7 +316,7 @@
                  z, \lim_{\mathsf{J}} U \widetilde{D}
                \right)
             \end{align*}$$
-            By the <a href=discussion/yoneda-lemma.html>Yoneda lemma</a>, we conclude that$$
+            By the <a href=../discussion/yoneda-lemma.html>Yoneda lemma</a>, we conclude that$$
               \lim_{\mathsf{J}} \left( U \widetilde{D} \right) \simeq U \left( \lim_{\mathsf{J}} \widetilde{D} \right)
             $$as desired.<span class=sidenote-container><sup><a class=sidenote-anchor href=#sidenote-1>[1]</a></sup><span class=sidenote id=sidenote-1>
             [1]
@@ -307,6 +340,11 @@
               <li>
                 <a href="../discussion/limits.html">
                   Limits
+                </a>
+              </li>
+              <li>
+                <a href="../discussion/yoneda-lemma.html">
+                  Yoneda Lemma
                 </a>
               </li>
             </ul>

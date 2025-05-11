@@ -17,12 +17,6 @@ Take `q.uiver`'s suggested `height`s and scale them by `0.7` on the `<iframe>` y
     [ ] Something like `"Empty Limit -> Glossary"` or `"Empty Limit -> Right Adjoints Preserve Limits"`
       [ ] Time permitting, make these breadcrumbs into *functional* hyperlinks
   [ ] On Discussion- and Proof-family pages, change top of contents bar to have page name shown once you scroll down
-  [ ] fwiw, it's actually really easy to add darkmode:
-    ```css3
-    :root.darkmode {
-      --default-background-colour: #010101;
-    }
-    ```
 
 
 # TODO LIST:

@@ -7,15 +7,19 @@ have
 
 Missing content:
   - [ ] Literally any real Proof-family pages
-    - [ ] `proof/right-adjoints-preserve-limits.html`
-    - [ ] Proper nice internal encodings of interactive diagrams
-    - [ ] HTML generation for interactive diagrams
-    - [ ] CSS for interactive diagrams
+    - [x] `proof/right-adjoints-preserve-limits.html`
+    - [x] Proper nice internal encodings of interactive diagrams
+    - [x] HTML generation for interactive diagrams
+    - [x] CSS for interactive diagrams
     - [ ] JS for *interactive* diagrams
+      - [x] Find and focus right parts of right diagrams
+      - [ ] Actually reload the diagrams <------------------------- do this first
   - [ ] More Discussion-family pages
   - [ ] More Proof-family pages
 
 Defo fix:
+  - Glossary:
+    - [ ] `glossary.js` has a "FIXME:" comment
   - Discussion- and Proof-family pages:
     - [ ] Make `<iframe>`s not terrible on screen sizes other than my own...
     - [ ] Redesign where necessary for mobile.

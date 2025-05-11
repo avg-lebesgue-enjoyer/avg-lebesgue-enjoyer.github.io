@@ -77,22 +77,102 @@ document.addEventListener("DOMContentLoaded", () => {
    *  The array of all interactive diagrams currently on-screen.
    */
   const getOnScreenInteractiveDiagrams = () => {
-    return document.getElementsByClassName("interactive-diagram-container").filter(isOnScreen);
+    return Array.from(document.getElementsByClassName("interactive-diagram-container")).filter(isOnScreen);
   }
 
   /**
-   * Append the given `key : string` to the `.frame-number` field of the topmost interactive diagram
-   * currently on screen. If there are no such diagrams on screen, then do nothing.
-   * @param {string} key
-   *  The keypress to be appended to the relevant `.frame-number` field.
+   * Run the given `action` on the topmost interactive diagram currently on screen.
+   * Do nothing if there are no such diagrams on screen.
+   * @param {(Element) => void} action
+   *  The action to perform.
    */
-  const appendToFrameNumber = (key) => {
+  const withTopmostInteractiveDiagram = (action) => {
     let diagrams = getOnScreenInteractiveDiagrams();
     if (diagrams.length === 0) {
       return;
     }
-    const [diagram, ...ignoreThese] = diagrams;
-    
+    const [diagram, ..._] = diagrams;
+    action(diagram);
+  }
+
+  /**
+   * Update the topmost interactive diagram currently on screen.
+   * Do nothing if there are no such diagrams on screen.
+   */
+  const reloadTopmostInteractiveDiagram = () => {
+    withTopmostInteractiveDiagram((diagram) => {
+      console.debug("<!> FIXME: TODO: Reload the diagram");
+    });
+  }
+
+  /**
+   * Get the `.frame-number` field of this diagram.
+   * Return `null` on failure to find it.
+   * @param {Element} diagram 
+   *  The `<div class="interactive-diagram-container">` to find the
+   *  `.frame-number` field of.
+   * @returns {Element}
+   *  The `<input class="frame-number">` held within the `diagram`, or
+   *  `null` if it could not be found.
+   */
+  const getFrameNumberField = (diagram) => {
+    try {
+      return Array
+        .from(
+          Array.from(
+            Array.from(diagram.children)
+            [0] // `.interactive-diagram-frame`
+            .children
+          ).filter((element) => element.classList.contains("controls"))
+          [0] // `.controls`
+          .children
+        ).filter((element) => (element.tagName === "INPUT"))
+        [0]
+      ;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /**
+   * Run the given `action` on the `.frame-number` field of the topmost interactive
+   * diagram currently on screen.
+   * Do nothing if there are no such diagrams on screen.
+   * @param {(Element) => void} action
+   *  The action to perform on the "frame number" field
+   */
+  const withFrameNumberField = (action) => {
+    let diagrams = getOnScreenInteractiveDiagrams();
+    if (diagrams.length === 0) {
+      return;
+    }
+    const [diagram, ..._] = diagrams;
+    const input = getFrameNumberField(diagram);
+    if (input === null) {
+      return; // Squash
+    }
+    action(input);
+  }
+
+  /**
+   * Focus the `.frame-number` field of the topmost interactive diagram currently on screen.
+   * If there are no such diagrams on screen, then do nothing.
+   */
+  const focusFrameNumber = () => {
+    withFrameNumberField((input) => {
+      if (input !== document.activeElement) {
+        input.value = "";
+        input.focus();
+      }
+    });
+    reloadTopmostInteractiveDiagram();
+  }
+
+  /** Unfocus any `.frame-number` which currently has focus. */
+  const unfocusFrameNumber = () => {
+    if (document.activeElement.classList.contains("frame-number")) {
+      document.activeElement.blur();
+    }
   }
 
 
@@ -113,13 +193,13 @@ document.addEventListener("DOMContentLoaded", () => {
    *    "*":  Jump to the section at `sectionIds[7]`
    *    "(":  Jump to the section at `sectionIds[secitonIds.length - 1]`
    *  NUMBER:
-   *    "0", "1", "2":  Focus the `.frame-number` input of the topmost on-screen
-   *    "3", "4", "5":   interactive diagram, and append the string `"0"`/.../`"9"`
-   *    "6", "7", "8":   to its value. Only useful on Proof-family pages.
-   *    "9"          :
-   *    " ":            Focus the `.frame-number` input of the topmost on-screen
-   *                     interactive diagram, and reset its value to `""`. Only
-   *                     useful on Proof-family pages.
+   *    "0", "1", "2":  If the `.frame-number` input of the topmost on-screen
+   *    "3", "4", "5":   interactive diagram does not have focus, then reset its
+   *    "6", "7", "8":   value to `""` and give it focus. The overall effect is to
+   *    "9"          :   "start typing into the field". Only useful on Proof-family
+   *                     pages.
+   *    "Escape":       If the `.frame-number` input of some interactive diagram has
+   *                     focus, then unfocus it. Only useful on Proof-family pages.
    *  LETTER:
    *    "c", "a": Toggle contents bar
    *    "s", "f": Toggle sidenotes bar
@@ -175,10 +255,10 @@ document.addEventListener("DOMContentLoaded", () => {
         case "7":
         case "8":
         case "9":
-          appendToFrameNumber(e.key.toLowerCase());
+          focusFrameNumber();
           break;
-        case " ":
-          resetFrameNumber();
+        case "escape": // Not `"Escape"` due to `.toLowerCase()` in `switch`.
+          unfocusFrameNumber();
           break;
         // Toggle sidebars
         case "c":

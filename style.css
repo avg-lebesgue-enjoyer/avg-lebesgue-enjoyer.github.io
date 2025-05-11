@@ -361,7 +361,7 @@ main form > input.submit {
   margin-left: auto;
   margin-right: auto;
   /* Colouring */
-  background-color: var(--secondary-background-colour);
+  background-color: var(--light-accent-colour);
   border: var(--border-thickness) solid var(--border-colour);
   border-radius: var(--border-radius);
   transition: var(--transition-duration);
@@ -380,6 +380,10 @@ main form > input.submit:hover {
 :root:has(#suggestion-body:placeholder-shown) main form > input.submit:hover {
   background-color: var(--error-background-colour);
   color: var(--dark-error-text-colour);
+}
+:root:has(#suggestion-topic:placeholder-shown) main form > input.submit,
+:root:has(#suggestion-body:placeholder-shown) main form > input.submit {
+  background-color: var(--secondary-background-colour);
 }
 
 

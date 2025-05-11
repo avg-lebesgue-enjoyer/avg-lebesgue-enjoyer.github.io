@@ -10,6 +10,7 @@ Take `q.uiver`'s suggested `height`s and scale them by `0.7` on the `<iframe>` y
 
 # SECTION: Things to fix, if possible
   [ ] Hero image gets squished once width gets too small...
+    [ ] Use a media query to change out the image (different file) when the screen size is small enough.
   [ ] When hovering over navbar links, the text transitions through *gray*. 
     Could change from black --> white to (very dark blue) --> white
   [ ] `suggestions.html`: On hover over field, display tooltip giving idea of what to put in field ("please put [....] in this field!")

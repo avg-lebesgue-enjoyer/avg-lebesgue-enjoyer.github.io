@@ -22,7 +22,7 @@ Defo fix:
     - [ ] `glossary.js` has a "FIXME:" comment
   - Discussion- and Proof-family pages:
     - [ ] Make `<iframe>`s not terrible on screen sizes other than my own...
-    - [ ] Redesign where necessary for mobile.
+    - [ ] **Redesign where necessary for mobile.**
         - ^^ a decent chunk is necessary...
         - [ ] E.g. text should *left*-justify, rather than *justify*. (apple.com does this, for example)
   - General admin:

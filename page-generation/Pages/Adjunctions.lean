@@ -38,54 +38,54 @@ namespace Adjunctions
         "Adjunctions"
     , sections :=
         [ .mk
-          "Hom-set definition"
-          [ .body
-              [ .p
-                [ .s <| "The hom-set definition of an adjunction is how adjunctions are most typically introduced. Let $\\mathsf{C}$ and $\\mathsf{\\widetilde{C}}$ be categories. A " ++ strong "hom-set adjunction" ++ " consists of a pair of opposing functors"
-                , .eqn opposingFunctorsEqn
-                , .s "and a family of isomorphisms"
-                , .sn [.s "This family is often suppressed in practice."]
-                , .eqn homSetIsomorphismEqn
-                , .s "natural in $x \\in \\mathsf{C}^{\\mathrm{op}}$ and in $\\tilde{y} \\in \\widetilde{\\mathsf{C}}$."
-                ]
-              ]
-          ]
-      , .mk
-          "Unit-counit definition"
-          [ .body
-              [ .p
-                [ .s "The unit-counit definition is useful in 2-category theory, and for practically working with adjunctions."
-                , .s <| "Let $\\mathsf{C}$ and $\\widetilde{\\mathsf{C}}$ be categories. A " ++ strong "unit-counit adjunction" ++ " consists of a pair of opposing functors"
-                , .eqn opposingFunctorsEqn
-                , .s "and two natural transformations"
-                , .sn [.s "These are known as the unit and the counit respectively."]
-                , .al unitCounitAlign
-                , .s "such that the triangle identities shown below commute:"
-                ]
-              , .cda { href := triangleIdentitiesHref, height := some 302 }
-              ]
-          ]
-      , .mk
-          "Equivalence of Definitions"
-          [ .body
-              [ .ps "The two definitions provided above are equivalent in the following sense."
-              ]
-          , .block
-              { kind :=
-                  .lem
-              , body :=
-                  [ .p
-                    [ .s "Fix a pair of opposing functors $F : \\mathsf{C} \\rightleftarrows \\mathsf{\\widetilde{C}} : U$. Then, there is a family of isomorphisms"
-                    , .eqn homSetIsomorphismEqn
-                    , .s "specifying a hom-set adjunction if and only if there is a pair of natural transformations"
-                    , .al unitCounitAlign
-                    , .s "specifying a unit-counit adjunction."
-                    ]
+            "Hom-set definition"
+            [ .body
+                [ .p
+                  [ .s <| "The hom-set definition of an adjunction is how adjunctions are most typically introduced. Let $\\mathsf{C}$ and $\\mathsf{\\widetilde{C}}$ be categories. A " ++ strong "hom-set adjunction" ++ " consists of a pair of opposing functors"
+                  , .eqn opposingFunctorsEqn
+                  , .s "and a family of isomorphisms"
+                  , .sn [.s "This family is often suppressed in practice."]
+                  , .eqn homSetIsomorphismEqn
+                  , .s "natural in $x \\in \\mathsf{C}^{\\mathrm{op}}$ and in $\\tilde{y} \\in \\widetilde{\\mathsf{C}}$."
                   ]
-                outLink? :=
-                  { href := "../proof/adjunction-definition-equivalence.html" : OutLink }
-              }
-          ]
+                ]
+            ]
+        , .mk
+            "Unit-counit definition"
+            [ .body
+                [ .p
+                  [ .s "The unit-counit definition is useful in 2-category theory, and for practically working with adjunctions."
+                  , .s <| "Let $\\mathsf{C}$ and $\\widetilde{\\mathsf{C}}$ be categories. A " ++ strong "unit-counit adjunction" ++ " consists of a pair of opposing functors"
+                  , .eqn opposingFunctorsEqn
+                  , .s "and two natural transformations"
+                  , .sn [.s "These are known as the unit and the counit respectively."]
+                  , .al unitCounitAlign
+                  , .s "such that the triangle identities shown below commute:"
+                  ]
+                , .cda { href := triangleIdentitiesHref, height := some 302 }
+                ]
+            ]
+        , .mk
+            "Equivalence of definitions"
+            [ .body
+                [ .ps "The two definitions provided above are equivalent in the following sense."
+                ]
+            , .block
+                { kind :=
+                    .lem
+                , body :=
+                    [ .p
+                      [ .s "Fix a pair of opposing functors $F : \\mathsf{C} \\rightleftarrows \\mathsf{\\widetilde{C}} : U$. Then, there is a family of isomorphisms"
+                      , .eqn homSetIsomorphismEqn
+                      , .s "specifying a hom-set adjunction if and only if there is a pair of natural transformations"
+                      , .al unitCounitAlign
+                      , .s "specifying a unit-counit adjunction."
+                      ]
+                    ]
+                  outLink? :=
+                    { href := "../proof/adjunction-definition-equivalence.html" : OutLink }
+                }
+            ]
       , .mk
           "Result: RAPL"
           [ .body

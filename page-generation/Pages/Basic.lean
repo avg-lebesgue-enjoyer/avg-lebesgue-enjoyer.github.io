@@ -6,10 +6,14 @@
     and the page itself is to be exported as `ShortName.it`.
 -/
 
-/- IMPORTS: -/
+/- IMPORTS: Discussion-family pages -/
 
 import Pages.Adjunctions
 import Pages.Categories
+
+/- IMPORTS: Proof-family pages -/
+
+import Pages.RightAdjointsPreserveLimits
 
 
 
@@ -21,6 +25,9 @@ import Pages.Categories
   The filename is taken as if from the root directory of the website, without a `"./"` prefix.
 -/
 def pagesToRender : List (Page × System.FilePath) :=
-  [ .mk Adjunctions.it "discussion/adjunctions.html"
+  [ -- Discussion-family
+    .mk Adjunctions.it "discussion/adjunctions.html"
   , .mk Categories.it "discussion/categories.html"
+    -- Proof-family
+  , .mk RightAdjointsPreserveLimits.it "proof/right-adjoints-preserve-limits.html"
   ]

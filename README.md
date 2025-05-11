@@ -6,14 +6,6 @@ have
 # TODO LIST:
 
 Missing content:
-  - [ ] Literally any real Proof-family pages
-    - [x] `proof/right-adjoints-preserve-limits.html`
-    - [x] Proper nice internal encodings of interactive diagrams
-    - [x] HTML generation for interactive diagrams
-    - [x] CSS for interactive diagrams
-    - [ ] JS for *interactive* diagrams
-      - [x] Find and focus right parts of right diagrams
-      - [ ] Actually reload the diagrams <------------------------- do this first
   - [ ] More Discussion-family pages
   - [ ] More Proof-family pages
 

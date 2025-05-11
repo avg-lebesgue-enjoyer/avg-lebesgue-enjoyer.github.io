@@ -468,24 +468,32 @@ private def ul (ts : List Text) : StateT WriterState Id Unit := do
       inTag' "li" do
         text t
 
+/--
+  Write out the `<iframe>` for a (static) commutative diagram.
+
+  The `extraClasses`, if not `""`, are appended to the written class list.
+-/
+private def cda.iframe (d : Diagram) (extraClasses : String := "") : StateT WriterState Id Unit := do
+  childlessTag "iframe" <|
+    let options : List (String × String) :=
+      [ .mk "class" ("quiver-embed block-static-diagram" ++ (if extraClasses = "" then "" else s!" {extraClasses}"))
+      , .mk "src" s!"{d.href}&embed"
+      ]
+    ; match d.height with
+      | none    => options
+      | some h  => .mk "height" s!"{h}" :: options
+
 /-- Write a (static) commutative diagram. -/
 private def cda (d : Diagram) : StateT WriterState Id Unit := do
   inTag "div" [.mk "class" "block-static-diagram-container"] do
-    childlessTag "iframe" <|
-      let options : List (String × String) :=
-        [ .mk "class" "quiver-embed block-static-diagram"
-        , .mk "src" s!"{d.href}&embed"
-        ]
-      ; match d.height with
-        | none    => options
-        | some h  => .mk "height" s!"{h}" :: options
+    cda.iframe d
 
 /--
   Write the controls bar for an interactive commutative diagram.
 
   The "frame number" input is limited to a `max` value of `totalFrameCount`.
 -/
-private def ida.frame.controls (frameNumber : Nat) (totalFrameCount : Nat) : StateT WriterState Id Unit := do
+private def ida.frame.controls (totalFrameCount : Nat) : StateT WriterState Id Unit := do
   inTag "div" [.mk "class" "controls"] do
     inTag' "button" do
       newLine
@@ -498,7 +506,7 @@ private def ida.frame.controls (frameNumber : Nat) (totalFrameCount : Nat) : Sta
       , .mk "class" "frame-number"
       , .mk "min" "1"
       , .mk "max" s!"{totalFrameCount}"
-      , .mk "value" s!"{frameNumber}"
+      , .mk "value" "1"
       ]
     inTag' "button" do
       newLine
@@ -507,43 +515,47 @@ private def ida.frame.controls (frameNumber : Nat) (totalFrameCount : Nat) : Sta
         appendHtml' "(l)"
       appendHtml' " &rarr;"
 
-/--
-  Write out the optional "supporting text" of an interactive commutative diagram.
+/-- Write out the optional "supporting texts" of an interactive commutative diagram. -/
+private def ida.frame.text (texts : List (Option Text)) : StateT WriterState Id Unit := do
+  if texts.all Option.isNone then return ()
+  inTag "div" [.mk "class" "supporting-text"] do
+    for (frameNumber, text) in (texts |>.map (match · with | none => [.s "~"] | some t => t) |>.enumFrom 1) do
+      inTag "span" [.mk "class" (if frameNumber = 1 then "" else "hidden")] do
+        comment' s!"Frame {frameNumber}"
+        _root_.text text
 
-  If `t = none`, then nothing is written at all.
--/
-private def ida.frame.text (t : Option Text) : StateT WriterState Id Unit := do
-  match t with
-  | none => pure ()
-  | some t => do
-    inTag "div" [.mk "class" "supporting-text"] do
-      inTag' "span" do
-        _root_.text t
+-- /--
+--   Write out a single `frame` in an interactive commutative diagram. `frameNumber` specifies the index of this frame,
+--   **commencing with `1`**, out of a total of `totalFrameCount`.
+-- -/
+-- private def ida.frame (frameNumber : Nat) (totalFrameCount : Nat) (frame : IDFrame) : StateT WriterState Id Unit := do
+--   inTag "div"
+--     [ .mk
+--       "class"
+--       ( if frameNumber = 1
+--         then "interactive-diagram-frame"
+--         else "interactive-diagram-frame hidden"
+--       )
+--     ] do
+--       cda frame.cda
+--       ida.frame.text frame.text
+--       ida.frame.controls totalFrameCount
 
-/--
-  Write out a single `frame` in an interactive commutative diagram. `frameNumber` specifies the index of this frame,
-  **commencing with `1`**, out of a total of `totalFrameCount`.
--/
-private def ida.frame (frameNumber : Nat) (totalFrameCount : Nat) (frame : IDFrame) : StateT WriterState Id Unit := do
-  inTag "div"
-    [ .mk
-      "class"
-      ( if frameNumber = 1
-        then "interactive-diagram-frame"
-        else "interactive-diagram-frame hidden"
-      )
-    ] do
-      cda frame.cda
-      ida.frame.text frame.text
-      ida.frame.controls frameNumber totalFrameCount
+/-- Write out the (static) commutative diagrams within an interactive commutative diagram. -/
+private def ida.frame.cdas (ds : List Diagram) : StateT WriterState Id Unit := do
+  inTag "div" [.mk "class" "block-static-diagram-container"] do
+    for (frameNumber, d) in ds.enumFrom 1 do
+      comment' s!"Frame {frameNumber}"
+      cda.iframe d (if frameNumber = 1 then "" else "hidden")
 
 /-- Write an interactive commutative diagram. -/
 private def ida (d : InteractiveDiagram) : StateT WriterState Id Unit := do
   set { (←get) with okAsDiscussion := false } -- No `InteractiveDiagram`s on Discussion-family pages
   inTag "div" [.mk "class" "interactive-diagram-container"] do
-    for (frameNumber, frame) in d.enumFrom 1 do
-      comment' s!"Frame {frameNumber}"
-      ida.frame frameNumber d.length frame
+    inTag "div" [.mk "class" "interactive-diagram-frame"] do
+      ida.frame.cdas (d.map IDFrame.cda)
+      ida.frame.text (d.map IDFrame.text)
+      ida.frame.controls d.length
 
 /-- Write the `Body` of some container. -/
 private def elementBody (b : Body) : StateT WriterState Id Unit := do

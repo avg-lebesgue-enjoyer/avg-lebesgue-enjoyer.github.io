@@ -36,6 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  /** Jump to the top of the page. */
   function jumpToTop() {
     window.scrollTo(0, 0);
   }

@@ -60,19 +60,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* SECTION: Refresh `<iframe>`s */
 
-  /** Array of all currently active timeouts. */
+  /** Array of all currently active timeout IDs. */
   let activeTimeouts = []
+
+  /** Time in milliseconds from window resize until all `<iframe>`s reload their content. */
+  const IFRAME_RELOAD_TIMEOUT = 100
 
   /** Refresh all `<iframe>`s on the page. */
   const refreshIframes = () => {
+    // We refresh the `<iframe>`s by setting their `.src` attributes to `"about:blank"` and
+    // later overriding them with their `.dataset.src` (which contains a constant copy of
+    // the desired `.src`.
+    // The "later" is `IFRAME_RELOAD_TIMEOUT` milliseconds later.
+    // Since `refreshIframes` will be called many times when the browser size is dragged
+    // around by a user, we will have hundreds of timeouts elapse. To make this not feel
+    // nauseating for the user, we `clearTimeout` any of the timeout IDs that haven't
+    // elapsed.
+    // The "normal" way to do this (`iframe.src = iframe.src`) doesn't seem to work on my
+    // copy of Firefox.
     activeTimeouts.forEach(clearTimeout);
     activeTimeouts = [];
     Array.from(document.getElementsByTagName("iframe")).forEach((iframe) => {
-      // `iframe.src = iframe.src;` isn't working on Firefox, for some reason.
-      iframe.src = "";
-      activeTimeouts.push(setTimeout(() => { // This timeout seems to be necessary, and `10` milliseconds works well.
+      iframe.src = "about:blank";
+      activeTimeouts.push(setTimeout(() => {
         iframe.src = iframe.dataset.src;
-      }, 100));
+      }, IFRAME_RELOAD_TIMEOUT));
     });
   }
 

@@ -60,15 +60,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* SECTION: Refresh `<iframe>`s */
 
+  /** Array of all currently active timeouts. */
+  let activeTimeouts = []
+
   /** Refresh all `<iframe>`s on the page. */
   const refreshIframes = () => {
+    activeTimeouts.forEach(clearTimeout);
+    activeTimeouts = [];
     Array.from(document.getElementsByTagName("iframe")).forEach((iframe) => {
-      // `iframe.src = iframe.src;` isn't working here, for some reason.
-      const temp = iframe.src;
+      // `iframe.src = iframe.src;` isn't working on Firefox, for some reason.
       iframe.src = "";
-      setTimeout(() => { // This timeout seems to be necessary, and `10` milliseconds works well.
-        iframe.src = temp;
-      }, 10);
+      activeTimeouts.push(setTimeout(() => { // This timeout seems to be necessary, and `10` milliseconds works well.
+        iframe.src = iframe.dataset.src;
+      }, 100));
     });
   }
 
@@ -493,6 +497,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("keyup", ((e) => updateModifierKeyState(false, e)));
   document.getElementById("contents-bar-hide").onclick = toggleContentsBar;
   document.getElementById("sidenotes-bar-hide").onclick = toggleSidenotesBar;
+  window.addEventListener("resize", refreshIframes);
   Array.from(document.getElementsByClassName("interactive-diagram-container")).forEach((diagram) => {
     try {
       getLeftButton(diagram).addEventListener("click", () => {

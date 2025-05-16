@@ -478,6 +478,7 @@ private def cda.iframe (d : Diagram) (extraClasses : String := "") : StateT Writ
     let options : List (String × String) :=
       [ .mk "class" ("quiver-embed block-static-diagram" ++ (if extraClasses = "" then "" else s!" {extraClasses}"))
       , .mk "src" s!"{d.href}&embed"
+      , .mk "data-src" s!"{d.href}&embed"
       ]
     ; match d.height with
       | none    => options

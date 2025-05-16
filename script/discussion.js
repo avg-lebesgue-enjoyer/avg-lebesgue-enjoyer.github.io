@@ -58,6 +58,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+  /* SECTION: Refresh `<iframe>`s */
+
+  /** Refresh all `<iframe>`s on the page. */
+  const refreshIframes = () => {
+    Array.from(document.getElementsByTagName("iframe")).forEach((iframe) => {
+      // `iframe.src = iframe.src;` isn't working here, for some reason.
+      const temp = iframe.src;
+      iframe.src = "";
+      setTimeout(() => { // This timeout seems to be necessary, and `10` milliseconds works well.
+        iframe.src = temp;
+      }, 10);
+    });
+  }
+
+
+
   /* SECTION: Amend `.frame-number` field of some interactive diagram */
   /**
    * Compute whether the given `element`'s top-left corner is on-screen.

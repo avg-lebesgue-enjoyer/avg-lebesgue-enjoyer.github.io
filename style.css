@@ -372,7 +372,6 @@ main form > input.submit:hover {
   background-color: var(--accent-colour);
   color: var(--light-text-colour);
 }
-/* Highlight the "submit" button on hover. */
 :root:has(#suggestion-topic:placeholder-shown) main form > input.submit:hover,
 :root:has(#suggestion-body:placeholder-shown) main form > input.submit:hover {
   background-color: var(--error-background-colour);
@@ -914,6 +913,18 @@ main.family .interactive-diagram-frame > .controls .frame-number:hover {
   background-color: var(--accent-colour);
   color: var(--light-text-colour);
   border: var(--border-thickness) solid var(--border-colour);
+}
+main.family .interactive-diagram-frame:not(:has(.supporting-text > span:first-child.fake-hidden)) > .controls button:first-of-type,
+main.family .interactive-diagram-frame:not(:has(.supporting-text > span:last-child.fake-hidden)) > .controls button:last-of-type {
+  color: var(--light-border-colour);
+  background-color: var(--default-background-colour);
+  border: var(--border-thickness) solid var(--light-border-colour);
+}
+main.family .interactive-diagram-frame:not(:has(.supporting-text > span:first-child.fake-hidden)) > .controls button:first-of-type:hover,
+main.family .interactive-diagram-frame:not(:has(.supporting-text > span:last-child.fake-hidden)) > .controls button:last-of-type:hover {
+  background-color: var(--error-background-colour);
+  color: var(--dark-error-text-colour);
+  border: var(--border-thickness) solid var(--dark-error-text-colour)
 }
 
 

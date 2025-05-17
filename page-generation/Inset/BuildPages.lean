@@ -508,6 +508,7 @@ private def ida.frame.controls (totalFrameCount : Nat) : StateT WriterState Id U
       , .mk "min" "1"
       , .mk "max" s!"{totalFrameCount}"
       , .mk "value" "1"
+      , .mk "autocomplete" "off"
       ]
     inTag' "button" do
       newLine

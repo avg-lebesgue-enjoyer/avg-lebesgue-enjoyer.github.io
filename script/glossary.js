@@ -355,7 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   /* SECTION: Produce page list */
-  // NOTE: Code for this kind of task is far more readable with a framework like React. Perhaps a direction for
+  // NOTE: Code for this kind of task is far more readable with JSX. Perhaps a direction for
   //       future development, if this website actually gets used by someone other than me :)
 
   /**
@@ -459,20 +459,14 @@ document.addEventListener('DOMContentLoaded', () => {
    * Handle change on "Sort by:" field, producing a list of pages for the user.
    * @param {string} sortMethod
    *  Method to switch to sorting to
-   * @param {PointerEvent} e
-   *  The event triggering this callback
    */
-  const handleSortBy = (sortMethod, e) => {
+  const handleSortBy = (sortMethod) => {
     glossaryState.sortBy = sortMethod;
     updateGlossary();
   };
 
-  /**
-   * Handle change in the search bar, producing a list of pages for the user.
-   * @param {InputEvent} e
-   *  The event triggering this callback
-   */
-  const handleSearchBar = (e) => {
+  /** Handle change in the search bar, producing a list of pages for the user. */
+  const handleSearchBar = () => {
     const searchValue = document.getElementById("search-bar").value;
     glossaryState.filteredPages = fuzzilySearchForPage(searchValue); // NOTE: This isn't dangerous ONLY BECAUSE we're not passing this to an external API. If that chagnes in the future, THIS MUST BE REVIEWED TOO.
     updateGlossary();
@@ -500,7 +494,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function showErrorMessage() {
     document.getElementById("glossary-error-message").classList.remove("hidden");
     document.getElementById("glossary-error-timestamp").innerText = `Timestamp: ${new Date().toString()}`;
-    // FIXME: Show the default list of stuff; i.e. `handleSortBy(sortAlphabetical, new Event(""));`
+    handleSortBy(sortAlphabetical);
   }
 
 
@@ -510,18 +504,18 @@ document.addEventListener('DOMContentLoaded', () => {
   // Add event listener for changes to the "Sort by:" field
   getSortByRadioInputs()
     .forEach((radio) => {
-      radio.addEventListener("click", (e) => handleSortBy(radio.value, e));
+      radio.addEventListener("click", (e) => handleSortBy(radio.value));
     })
   ;
   // Add event listener for changes to the search bar
-  document.getElementById("search-bar").addEventListener("input", handleSearchBar);
+  document.getElementById("search-bar").addEventListener("input", (e) => handleSearchBar());
   // Add event listener for key down to jump to search bar
   document.addEventListener("keydown", handleKeyDown);
 
   // Clear out search bar
   document.getElementById("search-bar").value = "";
   // Produce default list of pages
-  handleSortBy(sortAlphabetical, new Event(""));
+  handleSortBy(sortAlphabetical);
   // Show results to the user
   document.getElementById("loading-spinner").classList.add("hidden");
   document.getElementById("sort-by-container").classList.remove("hidden");

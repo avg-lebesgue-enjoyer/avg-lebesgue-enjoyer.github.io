@@ -10,8 +10,6 @@ Missing content:
   - [ ] More Proof-family pages
 
 Defo fix:
-  - Glossary:
-    - [ ] `glossary.js` has a "FIXME:" comment
   - Discussion- and Proof-family pages:
     - [ ] Make `<iframe>`s not terrible on screen sizes other than my own...
       - [x] Have them reload on dynamic screen size change

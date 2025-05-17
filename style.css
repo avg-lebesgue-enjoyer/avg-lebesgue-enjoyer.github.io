@@ -839,6 +839,8 @@ main.family .interactive-diagram-container *.fake-hidden {
     The `top: -200vh;` does limit the possible heights of diagrams. If a diagram
     is > 200vh high, then it will bleed into the viewport. However, if you have
     a diagram that big, you really need to re-design it anyway...
+
+    The class name `.fake-hidden` is an homage to this deceptive CSS.
   */  
   position: absolute;
   left: 0vw;
@@ -893,6 +895,13 @@ main.family .interactive-diagram-frame > .supporting-text > * {
   margin-right: var(--margin);
 }
 
+/*
+  Style the controls. They should be positioned like this:
+    [    [button]    [.frame-number]    [button]    ]
+  On hover, each of the controls should appear in different "focused" colours. The same applies for `.frame-number:focus`.
+  When on the first "frame" of the diagram, the leftmost button should be "grayed out", and hovering should render it in red.
+  When on the last "frame" of the diagram, the rightmost button should be "grayed out", and hovering should render it in red.
+*/
 main.family .interactive-diagram-frame > .controls {
   display: flex;
   flex-direction: row;

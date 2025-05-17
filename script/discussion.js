@@ -61,37 +61,80 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* SECTION: Refresh `<iframe>`s */
 
-  /** Array of all currently active timeout IDs. */
-  let activeTimeouts = []
+  /**
+   * Array of all IDs of currently active timeouts for refreshing the `<iframe>`s.
+   * This array is wrapped in an object to allow it to be mutated when passed as an argument to a function;
+   * i.e. for "fake pass-by-reference".
+   */
+  let activeRefreshIframeTimeouts = {
+    ids: []
+  };
 
   /** Time in milliseconds from window resize until all `<iframe>`s reload their content. */
-  const IFRAME_RELOAD_TIMEOUT = 100
+  const IFRAME_RELOAD_TIMEOUT_DURATION = 100;
+
+  /**
+   * Clear all the timeouts in the given array of `timeouts.ids`, and set the array to `[]`.
+   * @param {Object} timeouts
+   *  Object holding the array of IDs of timeouts to clear as a `.ids` field.
+   *  This array will be MUTATED, being set to `[]` on completion of this method.
+   */
+  const clearTimeouts = (timeouts) => {
+    timeouts.ids.forEach(clearTimeout);
+    timeouts.ids = [];
+  }
+
+  /**
+   * Add a timeout to run the `callback` after the given `duration` has elapsed into the array
+   * held in `timeouts.ids`.
+   * @param {Object} timeouts 
+   *  Object holding the array of IDs of timeouts to add to.
+   *  This array will be MUTATED.
+   * @param {() => void} callback 
+   *  Callback to perform once the timeout elapses.
+   * @param {number} duration 
+   */
+  const addTimeout = (timeouts, callback, duration) => {
+    timeouts.ids.push(setTimeout(callback, duration));
+  }
 
   /** Refresh all `<iframe>`s on the page. */
   const refreshIframes = () => {
     // We refresh the `<iframe>`s by setting their `.src` attributes to `"about:blank"` and
     // later overriding them with their `.dataset.src` (which contains a constant copy of
     // the desired `.src`.
-    // The "later" is `IFRAME_RELOAD_TIMEOUT` milliseconds later.
+    // The "later" is `IFRAME_RELOAD_TIMEOUT_DURATION` milliseconds later.
     // Since `refreshIframes` will be called many times when the browser size is dragged
     // around by a user, we will have hundreds of timeouts elapse. To make this not feel
     // nauseating for the user, we `clearTimeout` any of the timeout IDs that haven't
     // elapsed.
     // The "normal" way to do this (`iframe.src = iframe.src`) doesn't seem to work on my
     // copy of Firefox.
-    activeTimeouts.forEach(clearTimeout);
-    activeTimeouts = [];
+    clearTimeouts(activeRefreshIframeTimeouts);
     Array.from(document.getElementsByTagName("iframe")).forEach((iframe) => {
       iframe.src = "about:blank";
-      activeTimeouts.push(setTimeout(() => {
+      addTimeout(activeRefreshIframeTimeouts, () => {
         iframe.src = iframe.dataset.src;
-      }, IFRAME_RELOAD_TIMEOUT));
+      }, IFRAME_RELOAD_TIMEOUT_DURATION);
     });
   }
 
 
 
   /* SECTION: Amend `.frame-number` field of some interactive diagram */
+
+  /** 
+   * Array of all IDs of currently active timeouts for unfocusing a `.frame-number`. 
+   * This array is wrapped in an object to allow it to be mutated when passed as an argument to a function;
+   * i.e. for "fake pass-by-reference".
+   */
+  let activeUnfocusFrameNumberTimeouts = {
+    ids: []
+  };
+
+  /** Time in milliseconds from last change in a `.frame-number` field until it is unfocused. */
+  const UNFOCUS_FRAME_NUMBER_TIMEOUT_DURATION = 1500;
+
   /**
    * Compute whether the given `element`'s top-left corner is on-screen.
    * @param {Element} element
@@ -212,13 +255,64 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /**
+   * Get the `.frame-number` of the given interactive commutative `diagram`, and run
+   * the specified `action` on it.
+   * Do nothing if the `.frame-number` cannot be found.
+   * @param {Element} diagram 
+   *  The diagram.
+   * @param {(Element) => void} action 
+   *  The action to run with the diagram's `.frame-number` field.
+   */
+  const withFrameNumberField = (diagram, action) => {
+    const frameNumber = getFrameNumberField(diagram);
+    if (frameNumber === null) {
+      return;
+    }
+    action(frameNumber);
+  }
+
+  /**
+   * Get the "left button" of the given interactive commutative `diagram`, and run
+   * the specified `action` on it.
+   * Do nothing if the button cannot be found.
+   * @param {Element} diagram 
+   *  The diagram.
+   * @param {(Element) => void} action 
+   *  The action to run with the diagram's left button.
+   */
+  const withLeftButton = (diagram, action) => {
+    const leftButton = getLeftButton(diagram);
+    if (leftButton === null) {
+      return;
+    }
+    action(leftButton);
+  }
+
+  /**
+   * Get the "right button" of the given interactive commutative `diagram`, and run
+   * the specified `action` on it.
+   * Do nothing if the button cannot be found.
+   * @param {Element} diagram 
+   *  The diagram.
+   * @param {(Element) => void} action 
+   *  The action to run with the diagram's right button.
+   */
+  const withRightButton = (diagram, action) => {
+    const rightButton = getRightButton(diagram);
+    if (rightButton === null) { 
+      return;
+    }
+    action(rightButton);
+  }
+
+  /**
    * Run the given `action` on the `.frame-number` field of the topmost interactive
    * diagram currently on screen.
    * Do nothing if there are no such diagrams on screen.
    * @param {(Element) => void} action
    *  The action to perform on the "frame number" field
    */
-  const withFrameNumberField = (action) => {
+  const withTopmostFrameNumberField = (action) => {
     let diagrams = getOnScreenInteractiveDiagrams();
     if (diagrams.length === 0) {
       return;
@@ -239,35 +333,35 @@ document.addEventListener("DOMContentLoaded", () => {
    */
   const reloadDiagram = (diagram) => {
     // Get the `.frame-number` field, and adjust its `.value` to fall
-      // between its `.min` and `.max`.
-      const input = getFrameNumberField(diagram);
-      input.value = input.value.replace(/\D/g,""); // Strip non-numeric characters; SRC: https://stackoverflow.com/a/1862219
-      if (input === null || isNaN(Number(input.value))) {
-        return; // Squash
-      }
-      if (Number(input.value) <= 0) {
-        input.value = "1";
-      } else if (Number(input.max) < Number(input.value)) {
-        input.value = input.max;
-      }
-      const newFrameNumber = Number(input.value);
-      // Get `<iframe>`s and `<span>`s to modify
-      const iframes = Array.from(Array.from(Array.from(diagram.children)[0].children)[0].children);
-      const spans = Array.from(Array.from(Array.from(diagram.children)[0].children)[1].children);
-      if (iframes.length !== spans.length || newFrameNumber <= 0 || iframes.length < newFrameNumber) {
-        // There are more `<iframe>`s than `<span>`s (or vice versa),
-        // or the `newFrameNumber` is out of bounds. Give up.
-        return;
-      }
-      // Reload the diagram
-      iframes.forEach((iframe) => {
-        iframe.classList.add("fake-hidden");
-      });
-      spans.forEach((span) => {
-        span.classList.add("fake-hidden");
-      });
-      iframes[newFrameNumber - 1].classList.remove("fake-hidden");
-      spans[newFrameNumber - 1].classList.remove("fake-hidden");
+    // between its `.min` and `.max`.
+    const input = getFrameNumberField(diagram);
+    input.value = input.value.replace(/\D/g,""); // Strip non-numeric characters; SRC: https://stackoverflow.com/a/1862219
+    if (input === null || isNaN(Number(input.value))) {
+      return; // Squash
+    }
+    if (Number(input.value) <= 0) {
+      input.value = "1";
+    } else if (Number(input.max) < Number(input.value)) {
+      input.value = input.max;
+    }
+    const newFrameNumber = Number(input.value);
+    // Get `<iframe>`s and `<span>`s to modify
+    const iframes = Array.from(Array.from(Array.from(diagram.children)[0].children)[0].children);
+    const spans = Array.from(Array.from(Array.from(diagram.children)[0].children)[1].children);
+    if (iframes.length !== spans.length || newFrameNumber <= 0 || iframes.length < newFrameNumber) {
+      // There are more `<iframe>`s than `<span>`s (or vice versa),
+      // or the `newFrameNumber` is out of bounds. Give up.
+      return;
+    }
+    // Reload the diagram
+    iframes.forEach((iframe) => {
+      iframe.classList.add("fake-hidden");
+    });
+    spans.forEach((span) => {
+      span.classList.add("fake-hidden");
+    });
+    iframes[newFrameNumber - 1].classList.remove("fake-hidden");
+    spans[newFrameNumber - 1].classList.remove("fake-hidden");
   }
 
   /**
@@ -283,16 +377,18 @@ document.addEventListener("DOMContentLoaded", () => {
    * If there are no such diagrams on screen, then do nothing.
    */
   const focusFrameNumber = () => {
-    withFrameNumberField((input) => {
-      console.debug(input);
+    withTopmostFrameNumberField((input) => {
       if (input !== document.activeElement) {
         input.value = "";
         input.focus();
       }
+      // Setup timeout to later unfocus this field
+      clearTimeouts(activeUnfocusFrameNumberTimeouts);
+      addTimeout(activeUnfocusFrameNumberTimeouts, unfocusFrameNumber, UNFOCUS_FRAME_NUMBER_TIMEOUT_DURATION);
     });
   }
 
-  /** Unfocus any `.frame-number` which currently has focus. */
+  /** Unfocus any `.frame-number` which currently has focus, and reload the topmost diagram. */
   const unfocusFrameNumber = () => {
     if (document.activeElement.classList.contains("frame-number")) {
       document.activeElement.blur();
@@ -320,7 +416,7 @@ document.addEventListener("DOMContentLoaded", () => {
    * Do nothing if there are no such diagrams.
    */
   const decrementOnScreenFrameNumber = () => {
-    withFrameNumberField((input) => {
+    withTopmostFrameNumberField((input) => {
       adjustFrameNumber(-1, input);
     });
   }
@@ -330,7 +426,7 @@ document.addEventListener("DOMContentLoaded", () => {
    * Do nothing if there are no such diagrams.
    */
   const incrementOnScreenFrameNumber = () => {
-    withFrameNumberField((input) => {
+    withTopmostFrameNumberField((input) => {
       adjustFrameNumber(+1, input);
     });
   }
@@ -505,25 +601,45 @@ document.addEventListener("DOMContentLoaded", () => {
     .map((section) => (section.id))
   ;
 
-  // Add event listeners
+  /*
+    Add the following event listeners:
+      `document`: "keydown": `handleKeyDown`
+      `document`: "keyup":   clear modifier key
+      `window`: "resize": `refreshIframes`
+      `.contents-bar-hide`: `.onclick`: toggleContentsBar
+      `.sidenotes-bar-hide`: `.onclick`: toggleSidenotesBar
+      Each interactive diagram D:
+        D's left button [ <- (h) ]: "click":
+          decrement D's frame number
+        D's right button [ (l) -> ]: "click":
+          increment D's frame number
+        D's `.frame-number`: "change":
+          reload D
+  */ 
   document.addEventListener("keydown", handleKeyDown);
   document.addEventListener("keyup", ((e) => updateModifierKeyState(false, e)));
+  window.addEventListener("resize", refreshIframes);
   document.getElementById("contents-bar-hide").onclick = toggleContentsBar;
   document.getElementById("sidenotes-bar-hide").onclick = toggleSidenotesBar;
-  window.addEventListener("resize", refreshIframes);
   Array.from(document.getElementsByClassName("interactive-diagram-container")).forEach((diagram) => {
-    try {
-      getLeftButton(diagram).addEventListener("click", () => {
+    // I love functional programming
+    withFrameNumberField(diagram, (frameNumber) => {
+      frameNumber.addEventListener("change", () => {
+        reloadDiagram(diagram);
+      });
+    });
+    withLeftButton(diagram, (button) => {
+      button.addEventListener("click", () => {
         adjustFrameNumber(-1, getFrameNumberField(diagram));
         reloadDiagram(diagram);
       });
-      getRightButton(diagram).addEventListener("click", () => {
+    });
+    withRightButton(diagram, (button) => {
+      button.addEventListener("click", () => {
         adjustFrameNumber(+1, getFrameNumberField(diagram));
         reloadDiagram(diagram);
       });
-    } catch (e) {
-      // Squash
-    }
+    });
   });
 
   // Render all `KaTeX` content in the document.
